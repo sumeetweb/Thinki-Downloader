@@ -9,7 +9,7 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 1. Notes   
 2. Videos   
 
-#### Tested Websites : PACKTPUB, HOOTSUITE, VERZEO  
+#### Tested Websites : PACKTPUB, HOOTSUITE  
 
 #### Planned :  
 1. Quiz Downloads   
