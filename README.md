@@ -25,4 +25,4 @@ RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES
 #### LINK FORMAT :  
 https://<THINKIFIC-WEBSITE>/api/course_player/v2/courses/<COURSE-NAME/SLUG>  
 	
-#### Author : SumeetWeb ~ https://github.com/sumeetweb	
+#### Author :  SumeetWeb ~ https://github.com/sumeetweb	
