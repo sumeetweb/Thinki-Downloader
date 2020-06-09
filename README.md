@@ -8,18 +8,18 @@ This script only downloads enrolled courses from thinkific based website.
 
 
 Currently Downloads : 1. Notes 
-					  2. Videos
+		      2. Videos 
 
 Tested Websites : PACKTPUB, HOOTSUITE, VERZEO
 
-Planned : 1. Quiz Downloads
-		  2. Chapterwise Downloading of Course
+Planned : 1. Quiz Downloads 
+	  2. Chapterwise Downloading of Course 
 
-Known BUGS : 1. Video folder is not creating in Windows OS, in place a blank file is being generated.
-				Solution : USE LINUX BASED OS TO RESOLVE THIS.
+Known BUGS : 1. Video folder is not creating in Windows OS, in place a blank file is being generated. 
+		Solution : USE LINUX BASED OS TO RESOLVE THIS. 
 		  
-USAGE : RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES
+USAGE : RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES 
 
-php run.php <LINK-HERE>		
+php run.php <LINK-HERE> 
   
 LINK FORMAT :  https://<<<<THINKIFIC-WEBSITE>>>>/api/course_player/v2/courses/<<<<<COURSE-NAME/SLUG>>>>>
