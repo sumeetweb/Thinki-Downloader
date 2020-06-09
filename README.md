@@ -2,7 +2,6 @@
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
 ## v1.0 ~ 9th June 2020
-### Author : SumeetWeb ~ https://github.com/sumeetweb
 
 #### This script only downloads enrolled courses from thinkific based website.
 
@@ -25,3 +24,5 @@ RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES
 
 #### LINK FORMAT :  
 https://<THINKIFIC-WEBSITE>/api/course_player/v2/courses/<COURSE-NAME/SLUG>  
+	
+#### Author : SumeetWeb ~ https://github.com/sumeetweb	
