@@ -23,6 +23,6 @@ Solution : USE LINUX BASED OS TO RESOLVE THIS.
 RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES  
 
 ### LINK FORMAT :  
-https://<URL-OF-WEBSITE>/api/course_player/v2/courses/<COURSE-NAME/SLUG>  
+https://URL-OF-WEBSITE/api/course_player/v2/courses/<COURSE-NAME/SLUG>  
 	
 ### ©SumeetWeb ~ https://github.com/sumeetweb	
