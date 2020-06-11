@@ -19,7 +19,7 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 1. Video folder is not creating in Windows OS, in place a blank file is being generated.   
 Solution : USE LINUX BASED OS TO RESOLVE THIS.   
 		  
-### USAGE :  php run.php <LINK-HERE>   
+### USAGE :  php run.php LINK-HERE   
 RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES  
 
 ### LINK FORMAT :  
