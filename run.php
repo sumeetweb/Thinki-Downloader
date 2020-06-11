@@ -1,4 +1,30 @@
 <?php
+/*
+
+MIT License
+
+Copyright (c) 2020 Sumeet Naik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL."v1.0 ~ 9th June 2020".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL;
 
@@ -24,11 +50,13 @@ Planned :
 Known BUGS : 1. Video folder is not creating in Windows OS, in place a blank file is being generated.
 Solution : USE LINUX BASED OS TO RESOLVE THIS.
 		  
-USAGE : RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES
+USAGE :- 
+!!! RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES !!!
+!!! Use php cli to run this script !!! - 
 
 php run.php <LINK-HERE>		
   
-LINK FORMAT :  https://<<<<THINKIFIC-WEBSITE>>>>/api/course_player/v2/courses/<<<<<COURSE-NAME/SLUG>>>>>
+LINK FORMAT :  https://<THINKIFIC-WEBSITE-URL>/api/course_player/v2/courses/<COURSE-NAME/SLUG>
 
 EXAMPLE URLS LIST of a Website ---
 
