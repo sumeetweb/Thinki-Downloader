@@ -11,14 +11,13 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 1. Notes
 2. Videos
 
-### Tested Websites : PACKTPUB, HOOTSUITE  
+### Tested Websites : PACKTPUB, HOOTSUITE,   
 
 ### Planned :  
-1. Quiz Downloads   
-2. Chapterwise Downloading of Course   
+1. Quiz Downloads     
 
 ### Known BUGS :  
-1. Video folder is not creating in Windows OS, in place a blank file is being generated.   
+--> Video folder is not getting created in Windows OS, in place a blank file is being generated.   
 Solution : USE LINUX BASED OS TO RESOLVE THIS.   
 		  
 ### USAGE :  php run.php LINK-HERE   
