@@ -1,13 +1,15 @@
 # Thinkific Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
-## v1.0 ~ 9th June 2020
+## v2.0 ~ 1st August 2020
+!NEW! Chapterwise Downloading added!
+!NEW! Added Support for non-downloadable videos.
 
 ### This script only downloads enrolled courses from thinkific based website.
 
 ### Currently Downloads :  
-1. Notes   
-2. Videos   
+1. Notes
+2. Videos
 
 ### Tested Websites : PACKTPUB, HOOTSUITE  
 
