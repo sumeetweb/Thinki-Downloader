@@ -2,8 +2,8 @@
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
 ## v2.0 ~ 1st August 2020
-!NEW! Chapterwise Downloading added!
-!NEW! Added Support for non-downloadable videos.
+!NEW! Chapterwise Downloading added!  
+!NEW! Added Support for non-downloadable videos.  
 
 ### This script only downloads enrolled courses from thinkific based website.
 
