@@ -1,4 +1,4 @@
-# Thinkific Downloader
+# Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
 ## v2.1 ~ 2nd October 2020
