@@ -1,40 +1,16 @@
 <?php
 set_time_limit(0);
 // SETTINGS  :-
-$clientdate = '2020-07-31T19:32:20.677Z';
-$cookiedata = '_ga=GA1.2.1240056005.1596058674; _uetvid=deeb3df4ca25727a55ef784d6c5bee58; _fbp=fb.1.1596058675476.797617281; __tawkuuid=e::verzeo.in::FNOYAp8QqY7gnZvhz7YbC3qJSpMb7b50rySDn2B9EUzeA96vZy9Qq2GpGK51ME2D::2; visitor_id=554896906; _thinkific_session=RFgvbWFDRzF4WldNMTlMcWtoM0NtRlB4c2ZORlNCYVRUeExCN3pUd0lud0p3Z0FLNDQ0K1Q4aklXVWV6N3hKbDRJQkpDTTdYeWRoMzBYY01CZDdaU2gyWlFGZk1pRU56RnVrME5IWklCUldKenZuQ1ZQRUJ3elM0Wk5aNGs0ZThFTURDVTd5TFA3Zk1lbFlMSkE2eE5RTDRhb2VmSERZRkZzY25UMGdTbjU3S1JrMUZHMGkyYnZHbzJyeEVGejVjMkRuekVES1l6RTJ6TVZ0QjlFRTdMZ0JvUGg4cWtCQmMrMWFZRVFOK21wSlpjMjFjSXQ5Qk5QQlJwN3JKSjNHL2lFUWtHVWRKSkJobUVxMFBhV1l2QXR2QUdkeTVrWXcrL1BUL0dBYmlYNkFJN21IVlpONzQ4MHFuZjBlTHVoTWwyNjNHejNGYkRsZ25SQnpsT0pQL3I3RzBYbjhFWEU3T1cyV0tkSnY0NlJoUFBjRy8yTFpMWVBDanFJVWdLaXcyUTMyOWRvMVhtd2NtbDNkYXlqc1dWc3p6eWk1UHpWR2c4THBiUCtBeTBKYlk2b2xwUWhNeVNWMTdpbnpjVjZRbjhWeGFhcDRBRmE0c3pJTXYrTTBtZlpGcmdON2hZejdsNStXeVhsdjJUcGs9LS1wNW85QUh4b3NaQ21nVkpUbGZSZGt3PT0%3D--89a38890940ef669d8481fd3900651dfd65c64a3';
-
-
-/*
-
-######################
-##
-##
-##
-##
-##
-##
-##
-######################
-					##
-					##
-					##
-					##
-					##
-					##
-					##
-					##
-######################
-
-*/
+$clientdate = '';
+$cookiedata = '';
 
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
-echo "THINKIFIC DOWNLOADER".PHP_EOL."v2.0 ~ 1st August 2020".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL;
+echo "THINKIFIC DOWNLOADER".PHP_EOL."v2.1 ~ 2nd October 2020".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL;
 
 /*
 
 THINKIFIC DOWNLOADER
-v2.0 ~ 1st August 2020
+v2.1 ~ 2nd October 2020
 Author : SumeetWeb ~ https://github.com/sumeetweb
 
 This script only downloads enrolled courses from thinkific based website.
@@ -49,9 +25,6 @@ Tested Websites : All Thinkific Based WebSites
 Planned : 
 		1. Quiz Downloads
 		2. Chapterwise Downloading of Course
-
-Known BUGS : 1. Video folder is not creating in Windows OS, in place a blank file is being generated.
-Solution : USE LINUX BASED OS TO RESOLVE THIS.
 		  
 USAGE :- 
 !!! RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES !!!
@@ -198,7 +171,7 @@ function unicode_decode($str) {
     return preg_replace_callback('/\\\\u([0-9a-f]{4})/i', 'replace_unicode_escape_sequence', $str);
 }
 
-// MAIN FUNCTIONS --END ~~~!!! DONOT MODIFY ABOVE THIS LINE !!!~~~
+// MAIN FUNCTIONS --END ~~~!!! DO NOT MODIFY ABOVE THIS LINE !!!~~~
 
 $url = query($argv[1]);
 $p = parse_url($argv[1]);
@@ -232,7 +205,7 @@ foreach($data as $dat)
 			$myfile = fopen($fname, "w");
 			fwrite($myfile, $temp2);
 			fclose($myfile);
-			$fileloc = $d["name"]."/".$fname;
+			$fileloc = $dc."/".$fname;
 			rename($fname, $fileloc);
 			$i++;
 		}
@@ -253,7 +226,7 @@ foreach($data as $dat)
 				// Download the video inside a folder $d["name"]
 				$downloadedFileContents = file_get_contents($temp2);
 				$save = file_put_contents($fileName, $downloadedFileContents);
-				$fileloc = $d["name"]."/".$fileName;
+				$fileloc = $dc."/".$fileName;
 				rename($fileName, $fileloc);
 				$i++;
 			}
