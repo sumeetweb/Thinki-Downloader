@@ -17,10 +17,6 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 ### Planned :  
 1. Quiz Downloads     
-
-### Known BUGS :  
-<del>--> Video folder is not getting created in Windows OS, in place a blank file is being generated.   
-Solution : USE LINUX BASED OS TO RESOLVE THIS.</del>
   		  
 ### USAGE :  php downloaderv2.1.php LINK-HERE   
 RUN THIS SCRIPT ONLY INSIDE A BLANK FOLDER FOR PROPER MANAGEMENT OF FILES  
