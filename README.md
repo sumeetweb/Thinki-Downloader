@@ -9,10 +9,13 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 ## How to Use  
 
-Follow the video to set cookie data and client date.
-[![How to use Thinkifi-Downloader](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)
+Follow the video to set cookie data and client date.  
 
-php thinkidownloader3.php LINK-HERE 
+[![How to use Thinkifi-Downloader](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
+https://www.youtube.com/watch?v=RqaJkuTz_5g  
+
+
+php thinkidownloader3.php LINK-HERE   
 
 LINK FORMAT : https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG  
 
