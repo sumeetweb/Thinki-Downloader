@@ -193,7 +193,7 @@ function fdownload($url)
 		if ( !isset($middle[1]) ) { $middle[1] = null; }
 		$headers[trim($middle[0])] = trim($middle[1]);
 	}
-	$durl = $headers["location"];
+	$durl = $headers["Location"];
 	$path = parse_url($durl);
 	$p = explode("/", $path["path"]);
 	$fname = end($p);
