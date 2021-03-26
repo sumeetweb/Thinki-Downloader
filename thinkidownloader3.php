@@ -4,7 +4,7 @@ $pwd = '';
 // SETTINGS  :-
 $clientdate = '';
 $cookiedata = '';
-error_reporting(1); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
+error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL."v3 ~ 7th January 2021".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL;
 
 
@@ -253,7 +253,7 @@ function chapterwise_download($datas) {
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
                     fclose($myfile);
-                    chdir($prev_dir);					
+                    chdir($prev_dir);
                 }
 
                 if($content["contentable_type"] == "Lesson" && $content["display_name"] == "Video") // To download videos
