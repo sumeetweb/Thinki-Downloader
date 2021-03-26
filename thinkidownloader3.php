@@ -4,7 +4,7 @@ $pwd = '';
 // SETTINGS  :-
 $clientdate = '';
 $cookiedata = '';
-error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
+error_reporting(1); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL."v3 ~ 7th January 2021".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL;
 
 
@@ -253,7 +253,7 @@ function chapterwise_download($datas) {
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
                     fclose($myfile);
-                    chdir($prev_dir);
+                    chdir($prev_dir);					
                 }
 
                 if($content["contentable_type"] == "Lesson" && $content["display_name"] == "Video") // To download videos
@@ -267,6 +267,7 @@ function chapterwise_download($datas) {
                     $temp = json_decode($result,true);
                     if($temp["lesson"]["downloadable"] == true)
                     {
+						
                         $temp2 = $temp["videos"][0]["url"]; //Store Video URL to temp
                         $parts = parse_url($temp2);
                         $fileName = basename($parts["path"]);
@@ -276,7 +277,13 @@ function chapterwise_download($datas) {
                         // Download the video inside a folder $content["name"]
                         $downloadedFileContents = file_get_contents($temp2);
                         file_put_contents($fileName, $downloadedFileContents);
+
+						// save Page content along with the Video
+						$html_fileName = str_replace('.mp4','.html',$fileName);
+                        file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
+						
                         chdir($prev_dir);
+						
                     }
                     else
                     {
