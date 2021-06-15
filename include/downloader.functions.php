@@ -184,9 +184,16 @@ function fdownload($url)
 	}
 	$durl = $headers["Location"] ?? $headers["location"];
 	$path = parse_url($durl);
+	echo $durl.PHP_EOL;
 	$p = explode("/", $path["path"]);
 	$fname = end($p);
-    $fname = filter_filename($fname);
+	
+	parse_str($path["query"], $out);
+	if(isset($out["filename"]))
+		$fname = $out["filename"];
+    
+	$fname = filter_filename($fname);
+	echo $fname.PHP_EOL;
 	//$downloadedFileContents = file_get_contents($durl);
     //file_put_contents($fname, $downloadedFileContents);
 	$downloadedFileContents = downloadFileChunked($durl, $fname);
