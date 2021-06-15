@@ -10,5 +10,7 @@ if(!extension_loaded('curl'))
 	$msg .= '\nCurl not installed or enabled in php.ini';
 if(!extension_loaded('mbstring'))
 	$msg .= '\nMbstring extension not enabled. Remove ; from php.ini config in the line ;extension=mbstring';
+if(!extension_loaded('openssl'))
+	$msg .= '\nOpenssl not enabled in php.ini';
 if($msg != '')
     die($msg);
