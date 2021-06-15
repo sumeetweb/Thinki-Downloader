@@ -9,8 +9,9 @@ require("include/downloader.functions.php");
 
 // Run.
 $url = query($argv[1]);
-$p = parse_url($argv[1]);
-file_put_contents($p["fragment"].".json",$url);
+$path = parse_url($argv[1]);
+$path = explode("/", $path["path"]);
+file_put_contents(end($path).".json",$url);
 $data = json_decode($url,true);
 $contentsdata = $data["contents"];
 if(isset($data["error"]))
