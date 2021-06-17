@@ -9,9 +9,10 @@ require("include/downloader.functions.php");
 
 // Run.
 $url = query($argv[1]);
-$path = parse_url($argv[1]);
-$path = explode("/", $path["path"]);
-file_put_contents(end($path).".json",$url);
+$p = parse_url($argv[1]);
+$path = $p;
+$path = explode("/", $path["path"]); 
+file_put_contents(end($path).".json",$url); //save coursename.json
 $data = json_decode($url,true);
 $contentsdata = $data["contents"];
 if(isset($data["error"]))
