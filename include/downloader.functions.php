@@ -54,6 +54,31 @@ function chapterwise_download($datas) {
                     fclose($myfile);
                     chdir($prev_dir);
                 }
+		if($content["default_lesson_type_label"] == "Multimedia" && $content["default_lesson_type_icon"] == "multimedia") //Download multimedia type
+		        {
+                    $dc = $index.'. '.$content["name"].' Multimedia';
+                    $dc = filter_filename($dc);
+                    mkdir($dc, 0777);
+                    $prev_dir = getcwd();
+                    chdir($dc);
+                    echo "Downloading ".$content["name"].PHP_EOL;
+                    $result = query("https://".$p['host']."/api/course_player/v2/iframes/".$content['contentable']);
+                    $temp = json_decode($result,true);
+                    $temp2 = unicode_decode($temp["iframe"]["source_url"]);
+		    // file_contents can be external links so if it isn't html, just put the link in the contents of the file instead of downloading it - this if/else statement might not be needed.
+                    if((preg_match("/\b(.md|.html|\/)\b/", $temp2)) !== 0 ) {
+                        $file_contents = file_get_contents($temp2);
+                    } else { 
+                        echo "Not a valid documents, continuing";
+                        $file_contents = $temp2;
+                    }
+                    $fname = $content["name"].".html";
+		    $fname = preg_replace("/[^A-Za-z0-9\_\-\. \?]/", '', $fname); //You can name multimedia things that won't fit in a filename
+                    $myfile = fopen($fname, "w");
+                    fwrite($myfile, $file_contents);
+                    fclose($myfile);
+                    chdir($prev_dir);
+                }
 
                 if($content["contentable_type"] == "Lesson" && $content["default_lesson_type_icon"] == "video") // To download videos
                 {
