@@ -36,7 +36,7 @@ function chapterwise_download($datas) {
         foreach($contentsdata as $content) {
             if($content["id"] == $data) {
                 if($content["contentable_type"] == "HtmlItem" && $content["default_lesson_type_icon"] == "text") //For Downloading Notes which are in HTML Unicode Format
-		        {
+		{
                     $dc = $index.'. '.$content["name"].' Text';
                     $dc = filter_filename($dc);
                     mkdir($dc, 0777);
@@ -54,6 +54,7 @@ function chapterwise_download($datas) {
                     fclose($myfile);
                     chdir($prev_dir);
                 }
+		
 		if($content["default_lesson_type_label"] == "Multimedia" && $content["default_lesson_type_icon"] == "multimedia") //Download multimedia type
 		        {
                     $dc = $index.'. '.$content["name"].' Multimedia';
@@ -133,8 +134,18 @@ function chapterwise_download($datas) {
                 
                 if($content["contentable_type"] == "Download" && $content["default_lesson_type_icon"] == "download") // Download shared files
                 {
-
-                }
+		    	// format : "https://".$p['host']."/api/course_player/v2/downloads/".CONTENTABLE-ID
+		    	$dc = $index.'. '.$content["name"];
+                    	$dc = filter_filename($dc);
+                    	mkdir($dc, 0777);
+                    	$prev_dir = getcwd();
+                    	chdir($dc);
+			$result = json_decode(query("https://".$p['host']."/api/course_player/v2/downloads/".$content["contentable"]), true);
+			foreach($result["download_files"] as $res){
+				downloadFileChunked($res["download_url"], $res["label"]);
+			}
+			chdir($prev_dir);
+		}
 
                 if($content["contentable_type"] == "Survey" && $content["default_lesson_type_icon"] == "survey") // Download Survey page
                 {
@@ -150,52 +161,52 @@ function chapterwise_download($datas) {
 function query($url)
 {
 	global $clientdate, $cookiedata;
-    $referer = '';
-    $headers[] = 'Accept-Encoding: gzip, deflate, br';
-    $headers[] = 'Sec-Fetch-Mode: cors';
-    $headers[] = 'Sec-Fetch-Site: cross-site';
-    $headers[] = 'x-requested-with: XMLHttpRequest';
+    	$referer = '';
+    	$headers[] = 'Accept-Encoding: gzip, deflate, br';
+    	$headers[] = 'Sec-Fetch-Mode: cors';
+    	$headers[] = 'Sec-Fetch-Site: cross-site';
+    	$headers[] = 'x-requested-with: XMLHttpRequest';
 	$headers[] = 'x-thinkific-client-date: '.$clientdate;
-    $headers[] = 'cookie: '.$cookiedata;	
+    	$headers[] = 'cookie: '.$cookiedata;	
 	$useragent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
-    $process = curl_init($url);
-    curl_setopt($process, CURLOPT_POST, 0);
-    curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($process, CURLOPT_HEADER, 0);
-    curl_setopt($process, CURLOPT_USERAGENT, $useragent);
-    curl_setopt($process, CURLOPT_ENCODING, 'gzip,deflate,br');
-    curl_setopt($process, CURLOPT_REFERER, $referer);
-    curl_setopt($process, CURLOPT_TIMEOUT, 60);
-    curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);
-    $return = curl_exec($process);
-    curl_close($process);
-    return $return;
+    	$process = curl_init($url);
+    	curl_setopt($process, CURLOPT_POST, 0);
+    	curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+    	curl_setopt($process, CURLOPT_HEADER, 0);
+    	curl_setopt($process, CURLOPT_USERAGENT, $useragent);
+    	curl_setopt($process, CURLOPT_ENCODING, 'gzip,deflate,br');
+    	curl_setopt($process, CURLOPT_REFERER, $referer);
+    	curl_setopt($process, CURLOPT_TIMEOUT, 60);
+    	curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);
+    	$return = curl_exec($process);
+    	curl_close($process);
+    	return $return;
 }
 
 function fdownload($url)
 {
 	global $clientdate, $cookiedata;
 	$referer = '';
-    $headers[] = 'Accept-Encoding: gzip, deflate, br';
-    $headers[] = 'Sec-Fetch-Mode: cors';
-    $headers[] = 'Sec-Fetch-Site: same-origin';
-    $headers[] = 'x-requested-with: XMLHttpRequest';
+    	$headers[] = 'Accept-Encoding: gzip, deflate, br';
+    	$headers[] = 'Sec-Fetch-Mode: cors';
+    	$headers[] = 'Sec-Fetch-Site: same-origin';
+    	$headers[] = 'x-requested-with: XMLHttpRequest';
 	$headers[] = 'x-thinkific-client-date: '.$clientdate;
-    $headers[] = 'cookie: '.$cookiedata;
+    	$headers[] = 'cookie: '.$cookiedata;
 	$useragent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
-    $process = curl_init($url);
-    curl_setopt($process, CURLOPT_POST, 0);
-    curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($process, CURLOPT_HEADER, 1);
-    curl_setopt($process, CURLOPT_USERAGENT, $useragent);
-    curl_setopt($process, CURLOPT_ENCODING, 'gzip,deflate,br');
-    curl_setopt($process, CURLOPT_REFERER, $referer);
-    curl_setopt($process, CURLOPT_TIMEOUT, 60);
-    curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($process, CURLOPT_FOLLOWLOCATION, 0);
-    $return = curl_exec($process);
-    curl_close($process);
+    	$process = curl_init($url);
+    	curl_setopt($process, CURLOPT_POST, 0);
+    	curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+    	curl_setopt($process, CURLOPT_HEADER, 1);
+    	curl_setopt($process, CURLOPT_USERAGENT, $useragent);
+    	curl_setopt($process, CURLOPT_ENCODING, 'gzip,deflate,br');
+    	curl_setopt($process, CURLOPT_REFERER, $referer);
+    	curl_setopt($process, CURLOPT_TIMEOUT, 60);
+    	curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($process, CURLOPT_FOLLOWLOCATION, 0);
+    	$return = curl_exec($process);
+    	curl_close($process);
 	
 	$headers = [];
 	$output = rtrim($return);
@@ -220,48 +231,49 @@ function fdownload($url)
 	$fname = filter_filename($fname);
 	echo $fname.PHP_EOL;
 	//$downloadedFileContents = file_get_contents($durl);
-    //file_put_contents($fname, $downloadedFileContents);
+    	//file_put_contents($fname, $downloadedFileContents);
 	$downloadedFileContents = downloadFileChunked($durl, $fname);
 	//echo $downloadedFileContents." bytes downloaded.";
 }
 
-function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = true) {
-  global $clientdate, $cookiedata;
-  $http = array(
-      'request_fulluri' => 1,
-      'ignore_errors' => true,
-      'method' => 'GET'
-  );
-  $http['header'] = $headers;
-    $headers[] = 'Accept-Encoding: gzip, deflate, br';
-    $headers[] = 'Sec-Fetch-Mode: cors';
-    $headers[] = 'Sec-Fetch-Site: cross-site';
-    $headers[] = 'x-requested-with: XMLHttpRequest';
+function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = true)
+{
+  	global $clientdate, $cookiedata;
+  	$http = array(
+      		'request_fulluri' => 1,
+      		'ignore_errors' => true,
+      		'method' => 'GET'
+  	);
+  	$http['header'] = $headers;
+    	$headers[] = 'Accept-Encoding: gzip, deflate, br';
+    	$headers[] = 'Sec-Fetch-Mode: cors';
+    	$headers[] = 'Sec-Fetch-Site: cross-site';
+    	$headers[] = 'x-requested-with: XMLHttpRequest';
 	$headers[] = 'x-thinkific-client-date: '.$clientdate;
-    $headers[] = 'cookie: '.$cookiedata;
+    	$headers[] = 'cookie: '.$cookiedata;
 	$headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
   
-  $context = stream_context_create(array( 'http' => $http ));
+  	$context = stream_context_create(array( 'http' => $http ));
 
-  $chunksize = $chunkSize*(1024*1024); // How many bytes per chunk
-  $data = '';
-  $bytesCount = 0;
-  $handle = fopen($srcUrl, 'rb', false, $context);
-  $fp = fopen($dstName, 'w');
-  if ($handle === false) {
-    return false;
-  }
-  while (!feof($handle)) {
-    $data = fread($handle, $chunksize);
-    fwrite($fp, $data, strlen($data));
-    if ($returnbytes) {
-        $bytesCount += strlen($data);
-    }
-  }
-  $status = fclose($handle);
-  fclose($fp);
-  if ($returnbytes && $status) {
-    return $bytesCount; // Return number of bytes delivered like readfile() does.
-  }
-  return $status;
+  	$chunksize = $chunkSize*(1024*1024); // How many bytes per chunk
+  	$data = '';
+  	$bytesCount = 0;
+  	$handle = fopen($srcUrl, 'rb', false, $context);
+  	$fp = fopen($dstName, 'w');
+  	if ($handle === false) {
+  	  return false;
+  	}
+  	while (!feof($handle)) {
+    		$data = fread($handle, $chunksize);
+    		fwrite($fp, $data, strlen($data));
+    		if ($returnbytes) {
+        		$bytesCount += strlen($data);
+    		}
+  	}
+  	$status = fclose($handle);
+  	fclose($fp);
+  	if ($returnbytes && $status) {
+    		return $bytesCount; // Return number of bytes delivered like readfile() does.
+  	}
+  	return $status;
 }
