@@ -6,17 +6,17 @@
 # Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
-## ***Revision 5 ~ 14th June 2021***
+## ***Revision 6 ~ 3rd December 2021***
 
-!NEW! Memory Limit Exhausted Error fixed. Downloading will be chunked. Max memory usage so far has been 10 MB in my system 🚀.    
-!NEW! Downloading files in Windows is now supported!  
+!NEW! Download Quiz with Answers (MCQs).  
+!NEW! Download Shared Files.  
+!NEW! Resume interrupted downloads anytime.  
+!NEW! Downloading files in Windows is NOW Deprecated! [Read Why Here](https://github.com/sumeetweb/Thinki-Downloader/issues/5)  
 !NEW! Chapterwise Downloading added!  
-!NEW! Added Support for non-downloadable videos.  
 
 ## How to Use  
 
 Follow the video to set cookie data and client date in the config.php file.  
-Video will be updated to match v3.1 soon.  
 [![How to use Thinkifi-Downloader](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
 https://www.youtube.com/watch?v=RqaJkuTz_5g  
 
@@ -30,9 +30,13 @@ LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-S
 ### Currently Downloads :  
 1. Notes  
 2. Videos  
+3. Shared Files  
+4. Quiz with Answers  
 
 ### Planned :  
-1. PDF Downloads  
+1. Discussions Page  
+2. Surveys  
+3. Assignments  
 
 ### Tested Websites :  
 - PACKTPUB  
@@ -40,9 +44,8 @@ LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-S
 
 ### Tested Using :  
 - PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
-- Windows 7/8/10, Ubuntu, CentOS 7
+- Ubuntu, CentOS 7
+
 
 If you like this work, consider [buying me a coffee](https://www.buymeacoffee.com/sumeet)!  
-You can also tip me BATs if you are using [Brave Browser](https://brave.com/)  
-
-©SumeetWeb ~ https://github.com/sumeetweb
+You can also tip me BATs if you are using [Brave Browser](https://brave.com/) at [my Github Profile link](https://github.com/sumeetweb)  
