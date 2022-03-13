@@ -6,12 +6,11 @@
 # Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
-## ***Revision 6 ~ 3rd December 2021***
+## ***Revision 6.1 ~ 14th March 2022***
 
 !NEW! Download Quiz with Answers (MCQs).  
 !NEW! Download Shared Files.  
 !NEW! Resume interrupted downloads anytime.  
-!NEW! Downloading files in Windows is NOW Deprecated! [Read Why Here](https://github.com/sumeetweb/Thinki-Downloader/issues/5)  
 !NEW! Chapterwise Downloading added!  
 
 ## How to Use  
@@ -44,7 +43,7 @@ LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-S
 
 ### Tested Using :  
 - PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
-- Ubuntu, CentOS 7
+- Ubuntu, CentOS 7, Windows
 
 
 If you like this work, consider [buying me a coffee](https://www.buymeacoffee.com/sumeet)!  
