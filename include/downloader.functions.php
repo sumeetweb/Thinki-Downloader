@@ -213,6 +213,8 @@ function query($url)
     curl_setopt($process, CURLOPT_REFERER, $referer);
     curl_setopt($process, CURLOPT_TIMEOUT, 60);
     curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($process, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($process, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);
     $return = curl_exec($process);
     curl_close($process);
@@ -236,6 +238,8 @@ function fdownload($url)
     curl_setopt($process, CURLOPT_HEADER, 1);
     curl_setopt($process, CURLOPT_USERAGENT, $useragent);
     curl_setopt($process, CURLOPT_ENCODING, 'gzip,deflate,br');
+    curl_setopt($process, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($process, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($process, CURLOPT_REFERER, $referer);
     curl_setopt($process, CURLOPT_TIMEOUT, 60);
     curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
