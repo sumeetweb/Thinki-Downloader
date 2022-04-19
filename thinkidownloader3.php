@@ -3,7 +3,7 @@ set_time_limit(0);
 require("config.php");
 $pwd = '';
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
-echo "THINKIFIC DOWNLOADER".PHP_EOL."v3.1 ~ 14th June 2021".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.buymeacoffee.com/sumeet".PHP_EOL;
+echo "THINKIFIC DOWNLOADER".PHP_EOL."Revision 6.1 ~ 14th March 2022".PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL;
 require("include/file.functions.php");
 require("include/downloader.functions.php");
 
