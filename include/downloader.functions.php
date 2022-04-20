@@ -161,9 +161,24 @@ function chapterwise_download($datas)
 
                 }
 
-                if ($content["contentable_type"] == "Pdf" && $content["default_lesson_type_icon"] == "pdf") // Download PDF
+                if ($content["contentable_type"] == "Pdf") // Download PDF
                 {
-
+                    echo "Downloading " . $content["name"] . PHP_EOL;
+                    // format : "https://".$p['host']."/api/course_player/v2/pdfs/".CONTENTABLE-ID
+                    $dc = $index . '. ' . $content["name"];
+                    $dc = filter_filename($dc);
+                    mkdir($dc, 0777);
+                    $prev_dir = getcwd();
+                    chdir($dc);
+                    $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/pdfs/" . $content["contentable"]), true);
+                    foreach ($result["pdf"] as $res) {
+                        $temp2 = $res["url"];
+                        $parts = parse_url($temp2);
+                        $fileName = basename($parts["path"]);
+                        $fileName = filter_filename($fileName);
+                        downloadFileChunked($res["url"], $fileName);
+                    }
+                    chdir($prev_dir);
                 }
 
                 if ($content["contentable_type"] == "Download" && $content["default_lesson_type_icon"] == "download") // Download shared files
