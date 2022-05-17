@@ -170,14 +170,13 @@ function chapterwise_download($datas)
                     mkdir($dc, 0777);
                     $prev_dir = getcwd();
                     chdir($dc);
+					
                     $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/pdfs/" . $content["contentable"]), true);
-                    foreach ($result["pdf"] as $res) {
-                        $temp2 = $res["url"];
-                        $parts = parse_url($temp2);
-                        $fileName = basename($parts["path"]);
-                        $fileName = filter_filename($fileName);
-                        downloadFileChunked($res["url"], $fileName);
-                    }
+                    $pdf_url = $result["pdf"]["url"];
+                    $parts = parse_url($pdf_url);
+                    $fileName = basename($parts["path"]);
+                    $fileName = filter_filename($fileName);
+                    downloadFileChunked($pdf_url, $fileName);
                     chdir($prev_dir);
                 }
 
