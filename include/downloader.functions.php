@@ -40,8 +40,13 @@ function chapterwise_download($datas)
             if ($content["id"] == $data) {
                 if ($content["contentable_type"] == "HtmlItem" && $content["default_lesson_type_icon"] == "text") //For Downloading Notes which are in HTML Unicode Format
                 {
-                    $dc = $index . '. ' . $content["name"] . ' Text';
-                    $dc = filter_filename($dc);
+		    $fname = $content["slug"].".html";
+                    $fname = filter_filename($fname);
+		    if(file_exists($fname)) {
+			continue;
+		    }
+                    $dc = $index.'.'.$content["name"].'Text';
+                    $dc = trim(filter_filename($dc));
                     mkdir($dc, 0777);
                     $prev_dir = getcwd();
                     chdir($dc);
@@ -49,9 +54,7 @@ function chapterwise_download($datas)
                     $result = query("https://" . $p['host'] . "/api/course_player/v2/html_items/" . $content['contentable']);
                     $temp = json_decode($result, true);
                     $temp2 = unicode_decode($temp["html_item"]["html_text"]); //Store Unicode Decoded HTML Code to temp2
-                    //Code to store html code into a file called $content["name"] .html
-                    $fname = $content["name"] . ".html";
-                    $fname = filter_filename($fname);
+		    $fname = str_replace(" ","-",$fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
                     fclose($myfile);
