@@ -46,5 +46,5 @@ LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-S
 - Ubuntu, CentOS 7, Windows
 
 
-If you like this work, consider [buying me a coffee](https://www.buymeacoffee.com/sumeet)!  
+If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!  
 You can also tip me BATs if you are using [Brave Browser](https://brave.com/) at [my Github Profile link](https://github.com/sumeetweb)  
