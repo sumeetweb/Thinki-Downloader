@@ -18,7 +18,7 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 1. Clone this repo or download the zip file.
 2. Install Docker: [docker.com](https://www.docker.com/)
 3. Create .env file in the root directory of the project and add the following lines:
-```JSON
+```bash
 COURSE_LINK=""
 CLIENT_DATE=""
 COOKIE_DATA=""
