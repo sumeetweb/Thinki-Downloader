@@ -30,6 +30,11 @@ https://www.youtube.com/watch?v=RqaJkuTz_5g
 
 COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
 
+4. Run the following command in the root directory of the project:
+```bash
+docker-compose up
+```
+
 #### DISCLAIMER: This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
 ### Currently Downloads :  
