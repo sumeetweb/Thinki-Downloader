@@ -13,16 +13,22 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 !NEW! Resume interrupted downloads anytime.  
 !NEW! Chapterwise Downloading added!  
 
-## How to Use  
 
-Follow the video to set cookie data and client date in the config.php file.  
+## Steps:
+1. Clone this repo or download the zip file.
+2. Install Docker: [docker.com](https://www.docker.com/)
+3. Create .env file in the root directory of the project and add the following lines:
+```JSON
+COURSE_LINK=""
+CLIENT_DATE=""
+COOKIE_DATA=""
+```
+
+Follow the video to set cookie data and client date in the .env file.  
 [![How to use Thinkifi-Downloader](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
 https://www.youtube.com/watch?v=RqaJkuTz_5g  
 
-
-`php thinkidownloader3.php LINK-HERE`  
-
-LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
+COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
 
 #### DISCLAIMER: This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 

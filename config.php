@@ -1,9 +1,9 @@
 <?php
-// SETTINGS  :-
-$clientdate = '';
-$cookiedata = '';
-// -:
+
+$clientdate = $_ENV['CLIENT_DATE'];
+$cookiedata = $_ENV['COOKIE_DATA'];
 $msg = '';
+
 if($cookiedata == '' || $clientdate == '')
     $msg .= "Cookie data and Client Date not set. Use the ReadMe file first before using this script.\n";
 if(!extension_loaded('curl'))
