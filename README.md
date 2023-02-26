@@ -16,25 +16,35 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 ## Steps:
 1. Clone this repo or download the zip file.
-2. Install Docker: [docker.com](https://www.docker.com/)
-3. Create .env file in the root directory of the project and add the following lines:
+2. If you have PHP >= 7.4.13 installed locally in your system, you can use this script directly. Skip to step 4(b).
+3. Install Docker: [docker.com](https://www.docker.com/)
+4. (a) 
+> > For Docker Method, create or modify existing .env file in the root directory of the project and add the following lines:
 ```bash
 COURSE_LINK=""
 CLIENT_DATE=""
 COOKIE_DATA=""
 ```
 
-Follow the video to set cookie data and client date in the .env file.  
-[![How to use Thinkifi-Downloader](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
-https://www.youtube.com/watch?v=RqaJkuTz_5g  
+> > Follow the video to set cookie data and client date in the .env file.  
 
-COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
+4. (b)
+> > For Direct Method, edit config.php file and modify $CLIENT_DATA and $CLIENT_DATE.  
 
-4. Run the following command in the root directory of the project:
+> > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
+> > https://www.youtube.com/watch?v=RqaJkuTz_5g  
+
+> * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
+
+5. Run the following command in the root directory of the project:
+> If using docker, run:
 ```bash
 docker-compose up
 ```
-
+> If using direct script, run:
+```bash
+php thinkidownloader3.php LINK-HERE
+```
 #### DISCLAIMER: This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
 ### Currently Downloads :  
@@ -58,4 +68,7 @@ docker-compose up
 
 
 If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!  
-You can also tip me BATs if you are using [Brave Browser](https://brave.com/) at [my Github Profile link](https://github.com/sumeetweb)  
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
+
+Thank You :)
