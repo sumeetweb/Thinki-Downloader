@@ -15,7 +15,8 @@ If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet
 
 ## ***Revision 6.2 ~ 3rd March 2023***
 
-!NEW! Presentation Downloads with FFMPEG support to merge audio and video files!  
+!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!
+!HOT! Beautified file names for video downloads!  
 !NEW! Download Quiz with Answers (MCQs).  
 !NEW! Download Shared Files.  
 !NEW! Resume interrupted downloads anytime.  
