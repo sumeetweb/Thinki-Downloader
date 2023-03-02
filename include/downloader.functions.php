@@ -43,10 +43,10 @@ function chapterwise_download($datas)
                 {
                     $fname = $content["slug"].".html";
                     $fname = filter_filename($fname);
-		            if(file_exists($fname)) { // If file already exists, skip it
+                    if(file_exists($fname)) { // If file already exists, skip it
                         echo "File already exists, skipping";
                         continue; // Skip
-		            }
+                    }
                     $dc = $index.'.'.$content["name"].' Text';
                     $dc = trim(filter_filename($dc));
                     mkdir($dc, 0777);
@@ -56,7 +56,7 @@ function chapterwise_download($datas)
                     $result = query("https://" . $p['host'] . "/api/course_player/v2/html_items/" . $content['contentable']);
                     $temp = json_decode($result, true);
                     $temp2 = unicode_decode($temp["html_item"]["html_text"]); //Store Unicode Decoded HTML Code to temp2
-		            $fname = str_replace(" ","-",$fname);
+                    $fname = str_replace(" ","-",$fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
                     fclose($myfile);
