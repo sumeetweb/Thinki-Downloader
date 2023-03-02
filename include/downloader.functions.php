@@ -3,9 +3,10 @@
 
 function init_course($datas)
 {
-    global $pwd;
+    global $pwd, $root_project_dir;
     $course_name = filter_filename($datas["course"]["name"]);
     $prev_dir = getcwd();
+    $root_project_dir = getcwd();
     //Create course folder and go inside
     mkdir($course_name, 0777);
     chdir($course_name);
@@ -32,20 +33,21 @@ function create_chap_folder($datas)
 
 function chapterwise_download($datas)
 {
-    global $contentsdata, $p;
+    global $contentsdata, $p, $root_project_dir;
 
     $index = 1;
     foreach ($datas as $data) {
         foreach ($contentsdata as $content) {
             if ($content["id"] == $data) {
-                if ($content["contentable_type"] == "HtmlItem" && $content["default_lesson_type_icon"] == "text") //For Downloading Notes which are in HTML Unicode Format
+                if ($content["contentable_type"] == "HtmlItem") //For Downloading Notes which are in HTML Unicode Format
                 {
-		    $fname = $content["slug"].".html";
+                    $fname = $content["slug"].".html";
                     $fname = filter_filename($fname);
-		    if(file_exists($fname)) {
-			continue;
-		    }
-                    $dc = $index.'.'.$content["name"].'Text';
+		            if(file_exists($fname)) { // If file already exists, skip it
+                        echo "File already exists, skipping";
+                        continue; // Skip
+		            }
+                    $dc = $index.'.'.$content["name"].' Text';
                     $dc = trim(filter_filename($dc));
                     mkdir($dc, 0777);
                     $prev_dir = getcwd();
@@ -54,14 +56,14 @@ function chapterwise_download($datas)
                     $result = query("https://" . $p['host'] . "/api/course_player/v2/html_items/" . $content['contentable']);
                     $temp = json_decode($result, true);
                     $temp2 = unicode_decode($temp["html_item"]["html_text"]); //Store Unicode Decoded HTML Code to temp2
-		    $fname = str_replace(" ","-",$fname);
+		            $fname = str_replace(" ","-",$fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
                     fclose($myfile);
                     chdir($prev_dir);
                 }
 
-                if ($content["default_lesson_type_label"] == "Multimedia" && $content["default_lesson_type_icon"] == "multimedia") //Download multimedia type
+                if ($content["default_lesson_type_label"] == "Multimedia") //Download multimedia type
                 {
                     $dc = $index . '. ' . $content["name"] . ' Multimedia';
                     $dc = filter_filename($dc);
@@ -87,9 +89,9 @@ function chapterwise_download($datas)
                     chdir($prev_dir);
                 }
 
-                if ($content["contentable_type"] == "Lesson" && $content["default_lesson_type_icon"] == "video") // To download videos
+                if ($content["contentable_type"] == "Lesson") // To download videos
                 {
-                    $dc = $index . '. ' . $content["name"] . ' Video';
+                    $dc = $index . '. ' . $content["name"] . ' Lesson';
                     $dc = filter_filename($dc);
                     mkdir($dc, 0777);
                     $prev_dir = getcwd();
@@ -118,16 +120,19 @@ function chapterwise_download($datas)
                     $vname = $content['name'];
                     echo "Downloading Video : " . $vname . PHP_EOL;
                     $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'] . "/download";
-                    fdownload($sendurl);
+                    fdownload($sendurl, $vname);
+                    // save page content along with the Video
+                    $html_fileName = $vname . ".html";
+                    file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
                     chdir($prev_dir);
                     //}
                 }
 
-                if ($content["contentable_type"] == "Quiz" && $content["default_lesson_type_icon"] == "quiz") // Download Quiz Questions with Answers
+                if ($content["contentable_type"] == "Quiz") // Download Quiz Questions with Answers
                 {
                     echo "Downloading " . $content["name"] . PHP_EOL;
                     // format : "https://".$p['host']."/api/course_player/v2/quizzes/".CONTENTABLE-ID
-                    $dc = $index . '. ' . $content["name"];
+                    $dc = $index . '. ' . $content["name"] . ' Quiz';
                     $dc = filter_filename($dc);
                     mkdir($dc, 0777);
                     $prev_dir = getcwd();
@@ -159,7 +164,7 @@ function chapterwise_download($datas)
                     chdir($prev_dir);
                 }
 
-                if ($content["contentable_type"] == "Assignment" && $content["default_lesson_type_icon"] == "assignment") // Download assignment
+                if ($content["contentable_type"] == "Assignment") // Download assignment
                 {
 
                 }
@@ -183,7 +188,7 @@ function chapterwise_download($datas)
                     chdir($prev_dir);
                 }
 
-                if ($content["contentable_type"] == "Download" && $content["default_lesson_type_icon"] == "download") // Download shared files
+                if ($content["contentable_type"] == "Download") // Download shared files
                 {
                     echo "Downloading " . $content["name"] . PHP_EOL;
                     // format : "https://".$p['host']."/api/course_player/v2/downloads/".CONTENTABLE-ID
@@ -199,11 +204,130 @@ function chapterwise_download($datas)
                     chdir($prev_dir);
                 }
 
-                if ($content["contentable_type"] == "Survey" && $content["default_lesson_type_icon"] == "survey") // Download Survey page
+                if ($content["contentable_type"] == "Survey") // Download Survey page
                 {
 
                 }
+                
+                if ($content["contentable_type"] == "Presentation") // Download Presentation PDFs and Audios
+                {
+                    echo "Downloading " . $content["name"] . PHP_EOL;
+                    // format : "https://".$p['host']."/api/course_player/v2/presentations/".CONTENTABLE-ID
+                    $dc = $index . '. ' . $content["name"];
+                    $dc = filter_filename($dc);
+                    mkdir($dc, 0777);
+                    $prev_dir = getcwd();
+                    chdir($dc);
+                    $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/presentations/" . $content["contentable"]), true);
+                    $pdf_url = $result["presentation"]["source_file_url"];
+                    $pdf_name = $result["presentation"]["source_file_name"];
+                    $pdf_name = filter_filename($pdf_name);
+                    downloadFileChunked($pdf_url, $pdf_name);
+                    
+                    $MULTIPURPOSE_FLAG = false;
+                    exec("ffmpeg -version", $output, $return);
+                    if($return == 0){
+                        $MULTIPURPOSE_FLAG = true;
+                    } else {
+                        echo "ffmpeg is not installed. Optionally, install ffmpeg to merge presentation images and audio into a video file.".PHP_EOL;
+                    }
 
+                    if(file_exists($dc ." - Merged PPT Video.mp4")){
+                       $MULTIPURPOSE_FLAG = false;
+                       echo "Merged PPT Video already exists. Skipping. ".$dc.PHP_EOL; 
+                    }
+
+                    if($MULTIPURPOSE_FLAG == true){
+
+                        // Download Image and Audio files
+                        echo "Downloading Images and Audio files".PHP_EOL;
+                        foreach ($result["presentation_items"] as $res) {
+                            
+                            $position = $res["position"]." - ";
+
+                            if ($res["audio_file_url"] != null) {
+                                $audio_url = $res["audio_file_url"];
+                                $audio_name = $res["audio_file_name"];
+                                $audio_name = filter_filename($audio_name);
+                                downloadFileChunked("https:".$audio_url, $position.$audio_name);
+                            }
+
+                            if($res["image_file_url"] != null) {
+                                $image_url = $res["image_file_url"];
+                                $image_name = $res["image_file_name"];
+                                $image_name = filter_filename($image_name);
+                                downloadFileChunked("https:".$image_url, $position.$image_name);
+                            }
+                        }
+                        echo "Merging Images and Audio files into a video file".PHP_EOL;
+                        // Merge Image and Audio files into a video file with ffmpeg
+                        foreach ($result["presentation_items"] as $res) {
+                            $position = $res["position"]." - ";
+                            if ($res["image_file_url"] != null) {
+                                $audio_name = $res["audio_file_name"];
+                                $audio_name = $position.filter_filename($audio_name);
+
+                                $image_name = $res["image_file_name"];
+                                $image_name = $position.filter_filename($image_name);
+                                $video_name = $image_name.".mp4";
+                                $cmd = "ffmpeg -r 1 -loop 1 -y -i '". $image_name ."' -i '". $audio_name ."' -c:a copy -r 1 -vcodec libx264 -shortest '". $video_name . "' -hide_banner -loglevel error";
+                                // If there is no audio file, then merge only image file with a null audio file of 5 seconds duration
+                                if($res["audio_file_url"] == null){
+                                    $cmd = "ffmpeg -r 1 -loop 1 -t 5 -y -i '". $image_name ."' -f lavfi -i anullsrc -c:a aac -r 1 -vcodec libx264 -shortest '". $video_name . "' -hide_banner -loglevel error";
+                                }
+                                echo $cmd . PHP_EOL;
+                                exec($cmd, $output, $return);
+                                $logs = implode(PHP_EOL, $output);
+                                file_put_contents($root_project_dir."/ffmpeg.log", $logs, FILE_APPEND);
+                                if($return == 0){
+                                    echo "Merged ".$image_name." and ".$audio_name." into ".$video_name.PHP_EOL;
+                                }
+
+                                // Unlink the temporary audio and image files with real paths
+                                unlink( getcwd() . '/' . $image_name);
+                                if($res["audio_file_url"] != null){
+                                    unlink( getcwd() . '/' . $audio_name );
+                                }
+                            }
+                        }
+                        // Create a list.txt file with all video files
+                        echo "Creating a list.txt file with all video files".PHP_EOL;
+                        $files = glob("*.mp4");
+                        $list = "";
+                        // Sort files by position
+                        usort($files, function($a, $b) {
+                            $a = explode(" - ", $a);
+                            $b = explode(" - ", $b);
+                            return $a[0] - $b[0];
+                        });
+
+                        foreach($files as $file){
+                            // If video file name includes "Merged PPT Video.mp4", then skip it
+                            if(strpos($file, "Merged PPT Video.mp4") === false){
+                                $list .= "file '".$file."'" . PHP_EOL;
+                            }
+                        }
+                        file_put_contents("list.txt", $list);
+
+                        // Merge all video files into a single video file
+                        echo "Merging all video files into a single video file".PHP_EOL;
+                        $cmd = "ffmpeg -n -f concat -safe 0 -i list.txt -c copy '". $dc ." - Merged PPT Video.mp4' -hide_banner";
+                        exec($cmd, $output, $return);
+                        $logs = implode(PHP_EOL, $output);
+                        file_put_contents($root_project_dir."/ffmpeg.log", $logs, FILE_APPEND);
+                        if($return == 0){
+                            echo "Merged all videos into ". $dc ." - Video.mp4".PHP_EOL;
+                        }
+                        // Unlink the temporary video files
+                        foreach($files as $file){
+                            unlink(getcwd() . '/' . $file);
+                        }
+                        // Unlink the temporary list.txt file
+                        unlink(getcwd() . '/list.txt');
+                    }
+
+                    chdir($prev_dir);
+                }
                 $index++;
             }
         }
@@ -238,7 +362,7 @@ function query($url)
     return $return;
 }
 
-function fdownload($url)
+function fdownload($url, $file_name = null)
 {
     global $clientdate, $cookiedata;
     $referer = '';
@@ -285,6 +409,11 @@ function fdownload($url)
         $fname = $out["filename"];
     }
 
+    // Overwrite filename if provided
+    if($file_name){
+        $fname = $file_name.".".pathinfo($fname, PATHINFO_EXTENSION);
+    }
+
     $fname = filter_filename($fname);
     echo $fname . PHP_EOL;
     //$downloadedFileContents = file_get_contents($durl);
@@ -320,7 +449,7 @@ function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = t
 
     $context = stream_context_create(array('http' => $http));
 
-    $chunksize = $chunkSize * (1024 * 1024); // How many bytes per chunk
+    $chunksize = $chunkSize * (1024 * 1024); // How many bytes per chunk. By default 1MB.
     $data = '';
     $bytesCount = 0;
     $handle = fopen($srcUrl, 'rb', false, $context);
