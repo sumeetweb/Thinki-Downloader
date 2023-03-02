@@ -6,7 +6,7 @@
 # Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
-It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebones with just downloading the Html Content and lesson videos. Many features added was indeed, a requirement of people who pinged through Mails, and LinkedIN. 
+It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebone with just downloading the Html Content and Lesson Videos. With time, many features added was indeed, a requirement of people who pinged through emails and LinkedIn. 
 
 I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
 Please drop them at tdl-support@sumeetnaik.com  
@@ -15,7 +15,7 @@ If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet
 
 ## ***Revision 6.2 ~ 3rd March 2023***
 
-!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!
+!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
 !HOT! Beautified file names for video downloads!  
 !NEW! Download Quiz with Answers (MCQs).  
 !NEW! Download Shared Files.  
@@ -43,7 +43,7 @@ COOKIE_DATA=""
 $clientdate = "PASTE CLIENT DATE HERE";
 $cookiedata = "PASTE COOKIE DATA HERE";
 ```  
-
+> > Video is quite old now, but the process is still the same. Will update the video soon.
 > > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
 > > https://www.youtube.com/watch?v=RqaJkuTz_5g  
 
