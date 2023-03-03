@@ -270,10 +270,11 @@ function chapterwise_download($datas)
                                 $image_name = $res["image_file_name"];
                                 $image_name = $position.filter_filename($image_name);
                                 $video_name = $image_name.".mp4";
-                                $cmd = "ffmpeg -r 1 -loop 1 -y -i '". $image_name ."' -i '". $audio_name ."' -c:a copy -r 1 -vcodec libx264 -shortest '". $video_name . "' -hide_banner -loglevel error";
+                                // Single quotes aren't working in Windows.
+                                $cmd = 'ffmpeg -r 1 -loop 1 -y -i "'. $image_name .'" -i "'. $audio_name .'" -c:a copy -r 1 -vcodec libx264 -shortest "'. $video_name . '" -hide_banner -loglevel error';
                                 // If there is no audio file, then merge only image file with a null audio file of 5 seconds duration
                                 if($res["audio_file_url"] == null){
-                                    $cmd = "ffmpeg -r 1 -loop 1 -t 5 -y -i '". $image_name ."' -f lavfi -i anullsrc -c:a aac -r 1 -vcodec libx264 -shortest '". $video_name . "' -hide_banner -loglevel error";
+                                    $cmd = 'ffmpeg -r 1 -loop 1 -t 5 -y -i "'. $image_name .'" -f lavfi -i anullsrc -c:a aac -r 1 -vcodec libx264 -shortest "'. $video_name . '" -hide_banner -loglevel error';
                                 }
                                 echo $cmd . PHP_EOL;
                                 exec($cmd, $output, $return);
@@ -311,12 +312,12 @@ function chapterwise_download($datas)
 
                         // Merge all video files into a single video file
                         echo "Merging all video files into a single video file".PHP_EOL;
-                        $cmd = "ffmpeg -n -f concat -safe 0 -i list.txt -c copy '". $dc ." - Merged PPT Video.mp4' -hide_banner";
+                        $cmd = 'ffmpeg -n -f concat -safe 0 -i list.txt -c copy "Merged PPT Video.mp4" -hide_banner';
                         exec($cmd, $output, $return);
                         $logs = implode(PHP_EOL, $output);
                         file_put_contents($root_project_dir."/ffmpeg.log", $logs, FILE_APPEND);
                         if($return == 0){
-                            echo "Merged all videos into ". $dc ." - Video.mp4".PHP_EOL;
+                            echo "Merged all videos into one video".PHP_EOL;
                         }
                         // Unlink the temporary video files
                         foreach($files as $file){
