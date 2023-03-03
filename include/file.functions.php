@@ -1,7 +1,7 @@
 <?php
 // Below some functions are sourced from stackoverflow and github :)
 
-function filter_filename($filename, $beautify=false) {
+function filter_filename($filename, $beautify=true) {
     // sanitize filename // Issue #29
     $filename = preg_replace(
         '~

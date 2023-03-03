@@ -45,6 +45,7 @@ function chapterwise_download($datas)
                     $fname = filter_filename($fname);
                     if(file_exists($fname)) { // If file already exists, skip it
                         echo "File already exists, skipping";
+                        $index++;
                         continue; // Skip
                     }
                     $dc = $index.'.'.$content["name"].' Text';
@@ -61,6 +62,7 @@ function chapterwise_download($datas)
                     fwrite($myfile, $temp2);
                     fclose($myfile);
                     chdir($prev_dir);
+                    $index++;
                 }
 
                 if ($content["default_lesson_type_label"] == "Multimedia") //Download multimedia type
@@ -83,10 +85,12 @@ function chapterwise_download($datas)
                     }
                     $fname = $content["name"] . ".html";
                     $fname = preg_replace("/[^A-Za-z0-9\_\-\. \?]/", '', $fname); //You can name multimedia things that won't fit in a filename
+                    $fname = filter_filename($fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $file_contents);
                     fclose($myfile);
                     chdir($prev_dir);
+                    $index++;
                 }
 
                 if ($content["contentable_type"] == "Lesson") // To download videos
@@ -117,7 +121,7 @@ function chapterwise_download($datas)
                     else
                     {
                      */
-                    $vname = $content['name'];
+                    $vname = filter_filename($content['name']);
                     echo "Downloading Video : " . $vname . PHP_EOL;
                     $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'] . "/download";
                     fdownload($sendurl, $vname);
@@ -125,6 +129,7 @@ function chapterwise_download($datas)
                     $html_fileName = $vname . ".html";
                     file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
                     chdir($prev_dir);
+                    $index++;
                     //}
                 }
 
@@ -162,6 +167,7 @@ function chapterwise_download($datas)
                     fwrite($myfile, $file_contents);
                     fclose($myfile);
                     chdir($prev_dir);
+                    $index++;
                 }
 
                 if ($content["contentable_type"] == "Assignment") // Download assignment
@@ -186,6 +192,7 @@ function chapterwise_download($datas)
                     $fileName = filter_filename($fileName);
                     downloadFileChunked($pdf_url, $fileName);
                     chdir($prev_dir);
+                    $index++;
                 }
 
                 if ($content["contentable_type"] == "Download") // Download shared files
@@ -202,6 +209,7 @@ function chapterwise_download($datas)
                         downloadFileChunked($res["download_url"], $res["label"]);
                     }
                     chdir($prev_dir);
+                    $index++;
                 }
 
                 if ($content["contentable_type"] == "Survey") // Download Survey page
@@ -232,7 +240,8 @@ function chapterwise_download($datas)
                         echo "ffmpeg is not installed. Optionally, install ffmpeg to merge presentation images and audio into a video file.".PHP_EOL;
                     }
 
-                    if(file_exists($dc ." - Merged PPT Video.mp4")){
+                    $merged_video_name_check = filter_filename($content["contentable"]."-".$content["name"]."-merged.mp4");
+                    if(file_exists($merged_video_name_check)){
                        $MULTIPURPOSE_FLAG = false;
                        echo "Merged PPT Video already exists. Skipping. ".$dc.PHP_EOL; 
                     }
@@ -242,34 +251,21 @@ function chapterwise_download($datas)
                         // Download Image and Audio files
                         echo "Downloading Images and Audio files".PHP_EOL;
                         foreach ($result["presentation_items"] as $res) {
-                            
-                            $position = $res["position"]." - ";
-
                             if ($res["audio_file_url"] != null) {
-                                $audio_url = $res["audio_file_url"];
-                                $audio_name = $res["audio_file_name"];
-                                $audio_name = filter_filename($audio_name);
-                                downloadFileChunked("https:".$audio_url, $position.$audio_name);
+                                downloadFileChunked("https:".$res["audio_file_url"], filter_filename($res["position"].$res["audio_file_name"]));
                             }
-
+                            
                             if($res["image_file_url"] != null) {
-                                $image_url = $res["image_file_url"];
-                                $image_name = $res["image_file_name"];
-                                $image_name = filter_filename($image_name);
-                                downloadFileChunked("https:".$image_url, $position.$image_name);
+                                downloadFileChunked("https:".$res["image_file_url"], filter_filename($res["position"].$res["image_file_name"]));
                             }
                         }
                         echo "Merging Images and Audio files into a video file".PHP_EOL;
                         // Merge Image and Audio files into a video file with ffmpeg
                         foreach ($result["presentation_items"] as $res) {
-                            $position = $res["position"]." - ";
                             if ($res["image_file_url"] != null) {
-                                $audio_name = $res["audio_file_name"];
-                                $audio_name = $position.filter_filename($audio_name);
-
-                                $image_name = $res["image_file_name"];
-                                $image_name = $position.filter_filename($image_name);
-                                $video_name = $image_name.".mp4";
+                                $audio_name = filter_filename($res["position"].$res["audio_file_name"]);
+                                $image_name = filter_filename($res["position"].$res["image_file_name"]);
+                                $video_name = filter_filename($res["position"]."-slide.mp4");
                                 // Single quotes aren't working in Windows.
                                 $cmd = 'ffmpeg -r 1 -loop 1 -y -i "'. $image_name .'" -i "'. $audio_name .'" -c:a copy -r 1 -vcodec libx264 -shortest "'. $video_name . '" -hide_banner -loglevel error';
                                 // If there is no audio file, then merge only image file with a null audio file of 5 seconds duration
@@ -309,10 +305,10 @@ function chapterwise_download($datas)
                             }
                         }
                         file_put_contents("list.txt", $list);
-
+                        $merged_video_name = filter_filename($content["contentable"]."-".$content["name"]."-merged.mp4");
                         // Merge all video files into a single video file
                         echo "Merging all video files into a single video file".PHP_EOL;
-                        $cmd = 'ffmpeg -n -f concat -safe 0 -i list.txt -c copy "Merged PPT Video.mp4" -hide_banner';
+                        $cmd = 'ffmpeg -n -f concat -safe 0 -i list.txt -c copy "'.$merged_video_name.'" -hide_banner';
                         exec($cmd, $output, $return);
                         $logs = implode(PHP_EOL, $output);
                         file_put_contents($root_project_dir."/ffmpeg.log", $logs, FILE_APPEND);
@@ -328,8 +324,8 @@ function chapterwise_download($datas)
                     }
 
                     chdir($prev_dir);
+                    $index++;
                 }
-                $index++;
             }
         }
     }
@@ -439,7 +435,7 @@ function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = t
         'ignore_errors' => true,
         'method' => 'GET',
     );
-    $http['header'] = $headers;
+    $headers = array();
     $headers[] = 'Accept-Encoding: gzip, deflate, br';
     $headers[] = 'Sec-Fetch-Mode: cors';
     $headers[] = 'Sec-Fetch-Site: cross-site';
@@ -447,7 +443,7 @@ function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = t
     $headers[] = 'x-thinkific-client-date: ' . $clientdate;
     $headers[] = 'cookie: ' . $cookiedata;
     $headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
-
+    $http['header'] = $headers;
     $context = stream_context_create(array('http' => $http));
 
     $chunksize = $chunkSize * (1024 * 1024); // How many bytes per chunk. By default 1MB.
