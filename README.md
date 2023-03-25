@@ -88,6 +88,7 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
 Thank you to all the contributors and supporters :)  
+- Ahmad
 - Chris
 - Eddie
 - ΛLΛΠ
