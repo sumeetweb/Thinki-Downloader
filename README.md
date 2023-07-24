@@ -8,13 +8,16 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebone with just downloading the Html Content and Lesson Videos. With time, many features added was indeed, a requirement of people who pinged through emails and LinkedIn. 
 
-I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
-Please drop them at tdl-support@sumeetnaik.com  
+~~I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
+Please drop them at tdl-support@sumeetnaik.com~~  
+
+Update : Thanks to everyone who mailed and messaged on Twitter. I have decided not to go with online version of this script. It might not be a good idea to store your credentials on a server or keep copyright contents on server even if for a limited time. I will try to make this script more user friendly instead.  
 
 If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
 ## ***Revision 6.2 ~ 3rd March 2023***
 
+!NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
 !HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
 !HOT! Beautified file names for video downloads!  
 !NEW! Download Quiz with Answers (MCQs).  
