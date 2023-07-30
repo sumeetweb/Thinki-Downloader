@@ -1,0 +1,14 @@
+# Docker compose to run the php application
+
+services:
+  thinkidownloader:
+    image: php:7.4.33-cli
+    container_name: ThinkiDownloader
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: php thinkidownloader3.php --json ${COURSE_DATA_FILE}
+    environment:
+      - COURSE_DATA_FILE=${COURSE_DATA_FILE}
+      - CLIENT_DATE=${CLIENT_DATE}
+      - COOKIE_DATA=${COOKIE_DATA}
