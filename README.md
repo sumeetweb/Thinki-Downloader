@@ -8,13 +8,16 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebone with just downloading the Html Content and Lesson Videos. With time, many features added was indeed, a requirement of people who pinged through emails and LinkedIn. 
 
-I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
-Please drop them at tdl-support@sumeetnaik.com  
+~~I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
+Please drop them at tdl-support@sumeetnaik.com~~  
+
+Update : Thanks to everyone who mailed and messaged on Twitter. I have decided not to go with online version of this script. It might not be a good idea to store your credentials on a server or keep copyright contents on server even if for a limited time. I will try to make this script more user friendly instead. I am currently looking at [NativePHP](https://github.com/NativePHP) and check it out if it helps for multi-platform binary.  
 
 If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
 ## ***Revision 6.2 ~ 3rd March 2023***
 
+!NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
 !HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
 !HOT! Beautified file names for video downloads!  
 !NEW! Download Quiz with Answers (MCQs).  
@@ -43,9 +46,10 @@ COOKIE_DATA=""
 $clientdate = "PASTE CLIENT DATE HERE";
 $cookiedata = "PASTE COOKIE DATA HERE";
 ```  
-> > Video is quite old now, but the process is still the same. Will update the video soon.
+> > Video is quite old now, but the process is still the same. Will update the video soon.  
 > > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
 > > https://www.youtube.com/watch?v=RqaJkuTz_5g  
+> > Note : In the video, the course URL ends with php because I was trying to download a PHP Programming Course for the demo and "php" is the course name slug here ^^  
 
 > * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
 
@@ -56,8 +60,22 @@ docker-compose up
 ```
 > If using direct script, run:
 ```bash
-php thinkidownloader3.php LINK-HERE
+php thinkidownloader3.php LINK_HERE
 ```
+
+For selective downloads, please checkout [Thinki-Parser v0.0.1 Experimental Support](https://sumeetweb.github.io/Thinki-Parser/) and generate course data file.  
+Then pass --json flag and file path of course data file.  
+
+Also, please change .env file accordingly.  
+> If using docker, run (without ffmpeg):
+```bash
+docker-compose -f compose.selective.yaml up
+```
+> If using direct script, run:
+```bash
+php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
+```
+
 #### DISCLAIMER: This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
 ### Currently Downloads :  
@@ -72,10 +90,6 @@ php thinkidownloader3.php LINK-HERE
 2. Surveys  
 3. Assignments  
 
-### Tested Websites :  
-- PACKTPUB  
-- HOOTSUITE  
-
 ### Tested Using :  
 - PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
 - Ubuntu, CentOS 7, Windows
@@ -88,6 +102,10 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
 Thank you to all the contributors and supporters :)  
+- Eric
+- Pablo
+- Philip
+- AlienFever
 - Ahmad
 - Chris
 - Eddie

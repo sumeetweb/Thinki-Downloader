@@ -12,17 +12,28 @@ require("include/file.functions.php");
 require("include/downloader.functions.php");
 
 // Run.
-$url = query($argv[1]);
-$p = parse_url($argv[1]);
-$path = $p;
-$path = explode("/", $path["path"]); 
-file_put_contents(end($path).".json",$url); //save coursename.json
-$data = json_decode($url,true);
-$contentsdata = $data["contents"];
-if(isset($data["error"]))
-	die($data["error"].PHP_EOL);
-else
-	echo "Fetching Course Contents... Please Wait...".PHP_EOL;
-init_course($data);
-
+// If --json, then read from json file.
+// Else, download from url.
+if(in_array("--json", $argv) && isset($argv[2])) {
+	$json = file_get_contents($argv[2]);
+	$data = json_decode($json, true);
+	$contentsdata = $data["contents"];
+	init_course($data);
+} else if(isset($argv[1])) {
+	$url = query($argv[1]);
+	$p = parse_url($argv[1]);
+	$path = $p;
+	$path = explode("/", $path["path"]); 
+	file_put_contents(end($path).".json",$url); //save coursename.json
+	$data = json_decode($url,true);
+	$contentsdata = $data["contents"];
+	if(isset($data["error"]))
+		die($data["error"].PHP_EOL);
+	else
+		echo "Fetching Course Contents... Please Wait...".PHP_EOL;
+	init_course($data);
+} else {
+	echo "Usage : php thinkidownloader3.php <course_url>".PHP_EOL;
+	echo "Usage : php thinkidownloader3.php --json <course.json>".PHP_EOL;
+}
 ?>
