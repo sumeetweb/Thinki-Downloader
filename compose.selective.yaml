@@ -2,7 +2,7 @@
 
 services:
   thinkidownloader:
-    image: php:7.4.33-cli
+    image: sumeetweb/thinki-php:latest
     container_name: ThinkiDownloader
     volumes:
       - .:/app
