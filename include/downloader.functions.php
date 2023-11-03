@@ -57,6 +57,53 @@ function chapterwise_download($datas)
                     $result = query("https://" . $p['host'] . "/api/course_player/v2/html_items/" . $content['contentable']);
                     $temp = json_decode($result, true);
                     $temp2 = unicode_decode($temp["html_item"]["html_text"]); //Store Unicode Decoded HTML Code to temp2
+                    
+                    # Find a string similar to https://platform.thinkific.com/videoproxy/v1/play/*
+                    $regex = '/https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+/';
+                    preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
+                    $first_set_matches = array_unique($matches, SORT_REGULAR);
+                    print_r($first_set_matches);
+                    
+                    if(empty($first_set_matches)) {
+                        echo "No matches found. Continuing...";
+                    } else {
+                        foreach($first_set_matches as $match) {
+                            echo "Here";
+                            $video_url = $match[0];
+                            echo $video_url;
+                            $parts = parse_url($video_url);
+                            $video_data = query($video_url);
+                            echo $fileName;
+                            
+                            # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp 
+                            preg_match('/https:\/\/fast.wistia.com\/embed\/medias\/[a-zA-Z0-9]+.jsonp/', $video_data, $video_data);
+                            $video_data = $video_data[0];
+                            echo $video_data;
+                            $video_json_url = file_get_contents($video_data);
+                            echo $video_json_url;
+                            $jsonp_matches = [];
+                            preg_match('/\{.*\}/s', $video_json_url, $jsonp_matches);
+                            
+                            print_r($jsonp_matches);
+                            // Decode the JSON data
+                            $final_video_data = json_decode($jsonp_matches[0], true);
+
+                            $full_hd_url = $final_video_data["media"]["assets"][0]["url"];
+                            echo $full_hd_url;
+                            // Download the video
+                            downloadFileChunked($full_hd_url, $final_video_data["media"]["name"]);
+                        }
+                    }
+
+                    # Query the API for the video URL
+
+                    # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp
+
+                    // # FInd all iframe src links which contain https://platform.thinkific.com/videoproxy/v1/play/*
+                    // $regex = '/<iframe.*?src="(https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+)".*?<\/iframe>/';
+                    // preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
+                    // $matches = array_unique($matches, SORT_REGULAR);
+                    // print_r($matches);
                     $fname = str_replace(" ","-",$fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
