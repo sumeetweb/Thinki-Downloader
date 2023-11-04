@@ -33,7 +33,7 @@ function create_chap_folder($datas)
 
 function chapterwise_download($datas)
 {
-    global $contentsdata, $p, $root_project_dir;
+    global $contentsdata, $p, $root_project_dir, $FFMPEG_PRESENTATION_MERGE_FLAG, $video_download_quality;
 
     $index = 1;
     foreach ($datas as $data) {
@@ -57,6 +57,32 @@ function chapterwise_download($datas)
                     $result = query("https://" . $p['host'] . "/api/course_player/v2/html_items/" . $content['contentable']);
                     $temp = json_decode($result, true);
                     $temp2 = unicode_decode($temp["html_item"]["html_text"]); //Store Unicode Decoded HTML Code to temp2
+                    
+                    # Find a string similar to https://platform.thinkific.com/videoproxy/v1/play/*
+                    $regex = '/https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+/';
+                    preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
+                    $first_set_matches = array_unique($matches, SORT_REGULAR);
+                    print_r($first_set_matches);
+                    
+                    if(empty($first_set_matches)) {
+                        echo "No matches found. Continuing...";
+                    } else {
+                        foreach($first_set_matches as $match) {
+                            echo "Here";
+                            $video_url = $match[0];
+                            video_downloader($video_url, $content["name"], $video_download_quality);
+                        }
+                    }
+
+                    # Query the API for the video URL
+
+                    # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp
+
+                    // # FInd all iframe src links which contain https://platform.thinkific.com/videoproxy/v1/play/*
+                    // $regex = '/<iframe.*?src="(https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+)".*?<\/iframe>/';
+                    // preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
+                    // $matches = array_unique($matches, SORT_REGULAR);
+                    // print_r($matches);
                     $fname = str_replace(" ","-",$fname);
                     $myfile = fopen($fname, "w");
                     fwrite($myfile, $temp2);
@@ -123,8 +149,14 @@ function chapterwise_download($datas)
                      */
                     $vname = filter_filename($content['name']);
                     echo "Downloading Video : " . $vname . PHP_EOL;
-                    $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'] . "/download";
-                    fdownload($sendurl, $vname);
+                    $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'];
+                    $query_result = query($sendurl);
+                    $temp = json_decode($query_result, true);
+                    // $vid_location = $temp["videos"][0]["storage_location"];
+                    $wistia_id = $temp["videos"][0]["identifier"];
+                    $wistia_player_url = "https://platform.thinkific.com/videoproxy/v1/play/".$wistia_id;
+                    video_downloader($wistia_player_url, $vname, $video_download_quality);
+                    // fdownload($sendurl, $vname);
                     // save page content along with the Video
                     $html_fileName = $vname . ".html";
                     file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
@@ -246,7 +278,7 @@ function chapterwise_download($datas)
                        echo "Merged PPT Video already exists. Skipping. ".$dc.PHP_EOL; 
                     }
 
-                    if($MULTIPURPOSE_FLAG == true){
+                    if($MULTIPURPOSE_FLAG == true && $FFMPEG_PRESENTATION_MERGE_FLAG == true){
 
                         // Download Image and Audio files
                         echo "Downloading Images and Audio files".PHP_EOL;

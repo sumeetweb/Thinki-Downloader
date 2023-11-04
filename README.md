@@ -6,25 +6,22 @@
 # Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.
 
-It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebone with just downloading the Html Content and Lesson Videos. With time, many features added was indeed, a requirement of people who pinged through emails and LinkedIn. 
+<!-- It's been 2+ years of maintaining this repo and meeting new friends through online calls. Initially this project was barebone with just downloading the Html Content and Lesson Videos. With time, many features added was indeed, a requirement of people who pinged through emails and LinkedIn. 
 
 ~~I am thinking for a online version of it. But I am not sure if it will be a paid service or a free one.  Please let me know your thoughts on this :)  
 Please drop them at tdl-support@sumeetnaik.com~~  
 
-Update : Thanks to everyone who mailed and messaged on Twitter. I have decided not to go with online version of this script. It might not be a good idea to store your credentials on a server or keep copyright contents on server even if for a limited time. I will try to make this script more user friendly instead. I am currently looking at [NativePHP](https://github.com/NativePHP) and check it out if it helps for multi-platform binary.  
+Update : Thanks to everyone who mailed and messaged on Twitter. I have decided not to go with online version of this script. It might not be a good idea to store your credentials on a server or keep copyright contents on server even if for a limited time. I will try to make this script more user friendly instead. I am currently looking at [NativePHP](https://github.com/NativePHP) and check it out if it helps for multi-platform binary.   -->
 
-If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
+If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-## ***Revision 6.2 ~ 3rd March 2023***
+## ***Revision 6.3 ~ 4th November 2023***
 
 !NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
+!FIX! Wistia Video Download Fixed!  
+!HOT! Quality Selection for Video Downloads!  
 !HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
-!HOT! Beautified file names for video downloads!  
-!NEW! Download Quiz with Answers (MCQs).  
-!NEW! Download Shared Files.  
-!NEW! Resume interrupted downloads anytime.  
-!NEW! Chapterwise Downloading added!  
-
+!NEW! FFMPEG Support in Docker Image!  
 
 ## Steps:
 1. Clone this repo or download the zip file.
@@ -34,8 +31,22 @@ If you like this work, consider [buying me some coffee](https://ko-fi.com/sumeet
 > > For Docker Method, create or modify existing .env file in the root directory of the project and add the following lines:
 ```bash
 COURSE_LINK=""
+
+# If using selective download, add the following line and add the path of course data file downloaded from Thinki-Parser
+COURSE_DATA_FILE=""
+
+# Watch YouTube video to know how to get the client date and cookie data
 CLIENT_DATE=""
 COOKIE_DATA=""
+
+# Set the video download quality. Default is 720p.
+# Available Options: "Original File", "1080p", "720p", "540p", "360p", "224p"
+VIDEO_DOWNLOAD_QUALITY="720p"
+```
+
+If you want to merge audio and video files of presentations, install ffmpeg and set the following flag to true in config.php file, modify the following lines:
+```php
+$FFMPEG_PRESENTATION_MERGE_FLAG = true;
 ```
 
 > > Follow the video to set cookie data and client date in the .env file.  
@@ -45,8 +56,15 @@ COOKIE_DATA=""
 ```php
 $clientdate = "PASTE CLIENT DATE HERE";
 $cookiedata = "PASTE COOKIE DATA HERE";
-```  
-> > Video is quite old now, but the process is still the same. Will update the video soon.  
+// Set the video download quality. Default is 720p.
+// Available Options: "Original File", "1080p", "720p", "540p", "360p", "224p"
+$video_download_quality = "720p";
+
+// Set the following flag to true if you want to merge audio and video files of presentations
+$FFMPEG_PRESENTATION_MERGE_FLAG = true;
+```
+
+> > Video is quite old now, but the process is still the same. Will update the video tomorrow?  
 > > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
 > > https://www.youtube.com/watch?v=RqaJkuTz_5g  
 > > Note : In the video, the course URL ends with php because I was trying to download a PHP Programming Course for the demo and "php" is the course name slug here ^^  
@@ -54,7 +72,7 @@ $cookiedata = "PASTE COOKIE DATA HERE";
 > * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
 
 5. Run the following command in the root directory of the project:
-> If using docker, run (without ffmpeg):
+> If using docker, run:
 ```bash
 docker-compose up
 ```
