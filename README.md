@@ -65,8 +65,8 @@ $FFMPEG_PRESENTATION_MERGE_FLAG = true;
 ```
 
 > > Video is quite old now, but the process is still the same. Will update the video tomorrow?  
-> > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/RqaJkuTz_5g/0.jpg)](https://www.youtube.com/watch?v=RqaJkuTz_5g)  
-> > https://www.youtube.com/watch?v=RqaJkuTz_5g  
+> > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/owi-cOcpceI/0.jpg)](https://www.youtube.com/watch?v=owi-cOcpceI)  
+> > https://www.youtube.com/watch?v=owi-cOcpceI  
 > > Note : In the video, the course URL ends with php because I was trying to download a PHP Programming Course for the demo and "php" is the course name slug here ^^  
 
 > * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
@@ -120,6 +120,7 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
 Thank you to all the contributors and supporters :)  
+- Gbemi
 - Eric
 - Pablo
 - Philip
