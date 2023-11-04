@@ -62,7 +62,7 @@ function chapterwise_download($datas)
                     $regex = '/https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+/';
                     preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
                     $first_set_matches = array_unique($matches, SORT_REGULAR);
-                    print_r($first_set_matches);
+                    // print_r($first_set_matches);
                     
                     if(empty($first_set_matches)) {
                         echo "No matches found. Continuing...";
