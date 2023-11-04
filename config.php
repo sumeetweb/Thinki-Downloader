@@ -3,6 +3,7 @@
 $clientdate = $_ENV['CLIENT_DATE'];
 $cookiedata = $_ENV['COOKIE_DATA'];
 $video_download_quality = $_ENV['VIDEO_DOWNLOAD_QUALITY'];
+$FFMPEG_PRESENTATION_MERGE_FLAG = false;
 $msg = '';
 
 if($cookiedata == '' || $clientdate == '')
@@ -15,5 +16,3 @@ if(!extension_loaded('openssl'))
 	$msg .= 'Openssl not enabled in php.ini\n';
 if($msg != '')
     die($msg);
-
-$FFMPEG_PRESENTATION_MERGE_FLAG = false;
