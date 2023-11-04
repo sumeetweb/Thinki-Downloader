@@ -33,7 +33,7 @@ function create_chap_folder($datas)
 
 function chapterwise_download($datas)
 {
-    global $contentsdata, $p, $root_project_dir, $FFMPEG_PRESENTATION_MERGE_FLAG;
+    global $contentsdata, $p, $root_project_dir, $FFMPEG_PRESENTATION_MERGE_FLAG, $video_download_quality;
 
     $index = 1;
     foreach ($datas as $data) {
@@ -70,28 +70,7 @@ function chapterwise_download($datas)
                         foreach($first_set_matches as $match) {
                             echo "Here";
                             $video_url = $match[0];
-                            echo $video_url;
-                            $parts = parse_url($video_url);
-                            $video_data = query($video_url);
-                            echo $fileName;
-                            
-                            # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp 
-                            preg_match('/https:\/\/fast.wistia.com\/embed\/medias\/[a-zA-Z0-9]+.jsonp/', $video_data, $video_data);
-                            $video_data = $video_data[0];
-                            echo $video_data;
-                            $video_json_url = file_get_contents($video_data);
-                            echo $video_json_url;
-                            $jsonp_matches = [];
-                            preg_match('/\{.*\}/s', $video_json_url, $jsonp_matches);
-                            
-                            print_r($jsonp_matches);
-                            // Decode the JSON data
-                            $final_video_data = json_decode($jsonp_matches[0], true);
-
-                            $full_hd_url = $final_video_data["media"]["assets"][0]["url"];
-                            echo $full_hd_url;
-                            // Download the video
-                            downloadFileChunked($full_hd_url, $final_video_data["media"]["name"]);
+                            video_downloader($video_url, $content["name"], $video_download_quality);
                         }
                     }
 
@@ -176,20 +155,7 @@ function chapterwise_download($datas)
                     // $vid_location = $temp["videos"][0]["storage_location"];
                     $wistia_id = $temp["videos"][0]["identifier"];
                     $wistia_player_url = "https://platform.thinkific.com/videoproxy/v1/play/".$wistia_id;
-                    $video_data = query($wistia_player_url);
-                    
-                    # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp
-                    preg_match('/https:\/\/fast.wistia.com\/embed\/medias\/[a-zA-Z0-9]+.jsonp/', $video_data, $video_data);
-                    $video_data = $video_data[0];
-                    $video_json_url = file_get_contents($video_data);
-                    $jsonp_matches = [];
-                    preg_match('/\{.*\}/s', $video_json_url, $jsonp_matches);
-                    // Decode the JSON data
-                    $final_video_data = json_decode($jsonp_matches[0], true);
-                    $full_hd_url = $final_video_data["media"]["assets"][0]["url"];
-                    // Download the video
-                    downloadFileChunked($full_hd_url, $final_video_data["media"]["name"]);
-                    
+                    video_downloader($wistia_player_url, $vname, $video_download_quality);
                     // fdownload($sendurl, $vname);
                     // save page content along with the Video
                     $html_fileName = $vname . ".html";
