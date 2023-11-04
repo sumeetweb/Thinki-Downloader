@@ -33,7 +33,7 @@ function create_chap_folder($datas)
 
 function chapterwise_download($datas)
 {
-    global $contentsdata, $p, $root_project_dir;
+    global $contentsdata, $p, $root_project_dir, $FFMPEG_PRESENTATION_MERGE_FLAG;
 
     $index = 1;
     foreach ($datas as $data) {
@@ -170,8 +170,27 @@ function chapterwise_download($datas)
                      */
                     $vname = filter_filename($content['name']);
                     echo "Downloading Video : " . $vname . PHP_EOL;
-                    $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'] . "/download";
-                    fdownload($sendurl, $vname);
+                    $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'];
+                    $query_result = query($sendurl);
+                    $temp = json_decode($query_result, true);
+                    // $vid_location = $temp["videos"][0]["storage_location"];
+                    $wistia_id = $temp["videos"][0]["identifier"];
+                    $wistia_player_url = "https://platform.thinkific.com/videoproxy/v1/play/".$wistia_id;
+                    $video_data = query($wistia_player_url);
+                    
+                    # Find a string similar to https://fast.wistia.com/embed/medias/*.jsonp
+                    preg_match('/https:\/\/fast.wistia.com\/embed\/medias\/[a-zA-Z0-9]+.jsonp/', $video_data, $video_data);
+                    $video_data = $video_data[0];
+                    $video_json_url = file_get_contents($video_data);
+                    $jsonp_matches = [];
+                    preg_match('/\{.*\}/s', $video_json_url, $jsonp_matches);
+                    // Decode the JSON data
+                    $final_video_data = json_decode($jsonp_matches[0], true);
+                    $full_hd_url = $final_video_data["media"]["assets"][0]["url"];
+                    // Download the video
+                    downloadFileChunked($full_hd_url, $final_video_data["media"]["name"]);
+                    
+                    // fdownload($sendurl, $vname);
                     // save page content along with the Video
                     $html_fileName = $vname . ".html";
                     file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
@@ -293,7 +312,7 @@ function chapterwise_download($datas)
                        echo "Merged PPT Video already exists. Skipping. ".$dc.PHP_EOL; 
                     }
 
-                    if($MULTIPURPOSE_FLAG == true){
+                    if($MULTIPURPOSE_FLAG == true && $FFMPEG_PRESENTATION_MERGE_FLAG == true){
 
                         // Download Image and Audio files
                         echo "Downloading Images and Audio files".PHP_EOL;

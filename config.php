@@ -14,3 +14,5 @@ if(!extension_loaded('openssl'))
 	$msg .= 'Openssl not enabled in php.ini\n';
 if($msg != '')
     die($msg);
+
+$FFMPEG_PRESENTATION_MERGE_FLAG = false;
