@@ -15,7 +15,7 @@ Update : Thanks to everyone who mailed and messaged on Twitter. I have decided n
 
 If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-## ***Revision 6.3 ~ 4th November 2023***
+## ***Revision 6.3.1 ~ 11th December 2023***
 
 !NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
 !FIX! Wistia Video Download Fixed!  
@@ -63,11 +63,9 @@ $video_download_quality = "720p";
 // Set the following flag to true if you want to merge audio and video files of presentations
 $FFMPEG_PRESENTATION_MERGE_FLAG = true;
 ```
-
-> > Video is quite old now, but the process is still the same. Will update the video tomorrow?  
+> > Updated Video :  
 > > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/owi-cOcpceI/0.jpg)](https://www.youtube.com/watch?v=owi-cOcpceI)  
 > > https://www.youtube.com/watch?v=owi-cOcpceI  
-> > Note : In the video, the course URL ends with php because I was trying to download a PHP Programming Course for the demo and "php" is the course name slug here ^^  
 
 > * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
 
@@ -120,6 +118,7 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
 Thank you to all the contributors and supporters :)  
+- GiorgioG
 - Gbemi
 - Eric
 - Pablo
