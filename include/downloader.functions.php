@@ -154,8 +154,7 @@ function chapterwise_download($datas)
                     $temp = json_decode($query_result, true);
                     // $vid_location = $temp["videos"][0]["storage_location"];
                     $wistia_id = $temp["videos"][0]["identifier"];
-                    $wistia_player_url = "https://platform.thinkific.com/videoproxy/v1/play/".$wistia_id;
-                    video_downloader($wistia_player_url, $vname, $video_download_quality);
+                    video_downloader_v2($wistia_id, $vname, $video_download_quality);
                     // fdownload($sendurl, $vname);
                     // save page content along with the Video
                     $html_fileName = $vname . ".html";
