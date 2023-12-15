@@ -109,6 +109,15 @@ function chapterwise_download($datas)
                         echo "Not a valid documents, continuing";
                         $file_contents = $temp2;
                     }
+
+                    if(!empty($temp["download_files"])) {
+                        foreach($temp["download_files"] as $download_file) {
+                            $download_file_name = $download_file["label"];
+                            $download_file_url = $download_file["download_url"];
+                            fdownload($download_file_url, $download_file_name);
+                        }
+                    }
+
                     $fname = $content["name"] . ".html";
                     $fname = preg_replace("/[^A-Za-z0-9\_\-\. \?]/", '', $fname); //You can name multimedia things that won't fit in a filename
                     $fname = filter_filename($fname);
@@ -152,13 +161,39 @@ function chapterwise_download($datas)
                     $sendurl = "https://" . $p['host'] . "/api/course_player/v2/lessons/" . $content['contentable'];
                     $query_result = query($sendurl);
                     $temp = json_decode($query_result, true);
-                    // $vid_location = $temp["videos"][0]["storage_location"];
-                    $wistia_id = $temp["videos"][0]["identifier"];
-                    video_downloader_v2($wistia_id, $vname, $video_download_quality);
-                    // fdownload($sendurl, $vname);
+
+                    if(empty($temp["videos"])) {
+                        echo "No Lesson Videos found for ".$vname.PHP_EOL;
+                    } else {
+                        foreach ($temp["videos"] as $video) {
+                            if($video["storage_location"] == "wistia") {
+                                $wistia_id = $video["identifier"];
+                                video_downloader_v2($wistia_id, $vname, $video_download_quality);
+                            } else if($video["storage_location"] == "videoproxy") {
+                                $video_url = $video["url"];
+                                video_downloader($video_url, $vname, $video_download_quality);
+                            } else {
+                                echo "Unknown video storage location. Trying Native Method for . ".$vname.PHP_EOL;
+                                fdownload($video["url"], $vname);
+                            }
+                        }
+                    }
+
                     // save page content along with the Video
-                    $html_fileName = $vname . ".html";
-                    file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
+                    if(!empty($temp["lesson"]["html_text"])) {
+                        echo "Saving HTML Text for ".$vname.PHP_EOL;
+                        $html_fileName = $vname . ".html";
+                        file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
+                    }
+                    
+                    if(!empty($temp["download_files"])) {
+                        foreach($temp["download_files"] as $download_file) {
+                            $download_file_name = $download_file["label"];
+                            $download_file_url = $download_file["download_url"];
+                            fdownload($download_file_url, $download_file_name);
+                        }
+                    }
+
                     chdir($prev_dir);
                     $index++;
                     //}

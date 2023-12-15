@@ -15,10 +15,10 @@ Update : Thanks to everyone who mailed and messaged on Twitter. I have decided n
 
 If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-## ***Revision 6.3.1 ~ 11th December 2023***
+## ***Revision 6.3.2 ~ 16th December 2023***
 
 !NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
-!FIX! Wistia Video Download Fixed!  
+!FIX! "wistia" and "videoproxy" Lesson Downloads Fixed!  
 !HOT! Quality Selection for Video Downloads!  
 !HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
 !NEW! FFMPEG Support in Docker Image!  
