@@ -164,8 +164,6 @@ function chapterwise_download($datas)
 
                     if(empty($temp["videos"])) {
                         echo "No Lesson Videos found for ".$vname.PHP_EOL;
-                        $index++;
-                        continue;
                     } else {
                         foreach ($temp["videos"] as $video) {
                             if($video["storage_location"] == "wistia") {
@@ -183,6 +181,7 @@ function chapterwise_download($datas)
 
                     // save page content along with the Video
                     if(!empty($temp["lesson"]["html_text"])) {
+                        echo "Saving HTML Text for ".$vname.PHP_EOL;
                         $html_fileName = $vname . ".html";
                         file_put_contents($html_fileName, $temp["lesson"]["html_text"]);
                     }
