@@ -3,7 +3,7 @@ set_time_limit(0);
 require("config.php");
 $pwd = '';
 $root_project_dir = '';
-$revision = "Revision 6.3 ~ 4th November 2023";
+$revision = "Revision 6.3.2 ~ 16th December 2023";
 
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL.$revision.PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL."Want to download only selected videos? Thinki-Parser Experimental is available!".PHP_EOL;
@@ -34,7 +34,7 @@ if(in_array("--json", $argv) && isset($argv[2])) {
 		echo "Fetching Course Contents... Please Wait...".PHP_EOL;
 	init_course($data);
 } else {
-	echo "Usage : php thinkidownloader3.php <course_url>".PHP_EOL;
-	echo "Usage : php thinkidownloader3.php --json <course.json>".PHP_EOL;
+	echo "Usage for using course url: php thinkidownloader3.php <course_url>".PHP_EOL;
+	echo "Usage for selective download: php thinkidownloader3.php --json <course.json>".PHP_EOL;
 }
 ?>
