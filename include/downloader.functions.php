@@ -65,12 +65,11 @@ function chapterwise_download($datas)
                     // print_r($first_set_matches);
                     
                     if(empty($first_set_matches)) {
-                        echo "No matches found. Continuing...";
+                        echo "No matches found for videos in HTML Item. Continuing...";
                     } else {
                         foreach($first_set_matches as $match) {
-                            echo "Here";
                             $video_url = $match[0];
-                            video_downloader($video_url, $content["name"], $video_download_quality);
+                            video_downloader_videoproxy($video_url, $content["name"], $video_download_quality);
                         }
                     }
 
@@ -168,10 +167,10 @@ function chapterwise_download($datas)
                         foreach ($temp["videos"] as $video) {
                             if($video["storage_location"] == "wistia") {
                                 $wistia_id = $video["identifier"];
-                                video_downloader_v2($wistia_id, $vname, $video_download_quality);
+                                video_downloader_wistia($wistia_id, $vname, $video_download_quality);
                             } else if($video["storage_location"] == "videoproxy") {
-                                $video_url = $video["url"];
-                                video_downloader($video_url, $vname, $video_download_quality);
+                                $video_url = "https://platform.thinkific.com/videoproxy/v1/play/".$video["identifier"];
+                                video_downloader_videoproxy($video_url, $vname, $video_download_quality);
                             } else {
                                 echo "Unknown video storage location. Trying Native Method for . ".$vname.PHP_EOL;
                                 fdownload($video["url"], $vname);

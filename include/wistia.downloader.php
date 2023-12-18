@@ -1,6 +1,6 @@
 <?php
 
-function video_downloader($video_url, $file_name, $quality = "720p") {
+function video_downloader_videoproxy($video_url, $file_name, $quality = "720p") {
     $video_html_frame = query($video_url); 
     $id = "";
     # Get the jsonp id from the url
@@ -11,11 +11,11 @@ function video_downloader($video_url, $file_name, $quality = "720p") {
     }
 
     if(!empty($id)) {
-        video_downloader_v2($id, $file_name, $quality);
+        video_downloader_wistia($id, $file_name, $quality);
     }
 }
 
-function video_downloader_v2($wistia_id, $file_name, $quality = "720p") {
+function video_downloader_wistia($wistia_id, $file_name, $quality = "720p") {
     $video_data_url = "https://fast.wistia.com/embed/medias/".$wistia_id.".json";
     $final_video_data = json_decode(file_get_contents($video_data_url), true);
     // echo $final_video_data;
