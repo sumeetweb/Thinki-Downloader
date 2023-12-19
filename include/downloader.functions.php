@@ -301,11 +301,9 @@ function chapterwise_download($datas)
 
                     $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/audio/" . $content["contentable"]), true);
                     $audio_url = $result["audio"]["url"];
-                    // $parts = parse_url($audio_url);
-                    // $fileName = basename($parts["path"]);
-                    // $fileName = filter_filename($fileName);
-
-                    fdownload($audio_url);
+                    $parts = parse_url($audio_url);
+                    $fileName = filter_filename(urldecode(basename($parts["path"])));
+                    downloadFileChunked($audio_url, $fileName);
 
                     chdir($prev_dir);
                     $index++;
