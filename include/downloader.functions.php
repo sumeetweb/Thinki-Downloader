@@ -65,12 +65,11 @@ function chapterwise_download($datas)
                     // print_r($first_set_matches);
                     
                     if(empty($first_set_matches)) {
-                        echo "No matches found. Continuing...";
+                        echo "No matches found for videos in HTML Item. Continuing...";
                     } else {
                         foreach($first_set_matches as $match) {
-                            echo "Here";
                             $video_url = $match[0];
-                            video_downloader($video_url, $content["name"], $video_download_quality);
+                            video_downloader_videoproxy($video_url, $content["name"], $video_download_quality);
                         }
                     }
 
@@ -168,10 +167,10 @@ function chapterwise_download($datas)
                         foreach ($temp["videos"] as $video) {
                             if($video["storage_location"] == "wistia") {
                                 $wistia_id = $video["identifier"];
-                                video_downloader_v2($wistia_id, $vname, $video_download_quality);
+                                video_downloader_wistia($wistia_id, $vname, $video_download_quality);
                             } else if($video["storage_location"] == "videoproxy") {
-                                $video_url = $video["url"];
-                                video_downloader($video_url, $vname, $video_download_quality);
+                                $video_url = "https://platform.thinkific.com/videoproxy/v1/play/".$video["identifier"];
+                                video_downloader_videoproxy($video_url, $vname, $video_download_quality);
                             } else {
                                 echo "Unknown video storage location. Trying Native Method for . ".$vname.PHP_EOL;
                                 fdownload($video["url"], $vname);
@@ -209,29 +208,36 @@ function chapterwise_download($datas)
                     $prev_dir = getcwd();
                     chdir($dc);
                     $fname = filter_filename($content["name"] . " Answers.html");
+                    $qname = filter_filename($content["name"] . " Questions.html");
                     $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/quizzes/" . $content["contentable"]), true);
-                    $file_contents = "<h3 style='color: red;'>Answers of this Quiz are marked in RED </h3>";
+                    $file_contents_with_answers = "<h3 style='color: red;'>Answers of this Quiz are marked in RED </h3>";
                     // credited - key in choices arr base64 decode and check if string contains true or false to get option answer.
                     foreach ($result["questions"] as $qs) {
                         $choice = 'A';
-                        $file_contents = $file_contents . ++$qs["position"] . ") " . "<strong>" . unicode_decode($qs["prompt"]) . "</strong>" . "Explanation: " . unicode_decode($qs["text_explanation"]) . "<br><br>";
+                        $file_contents_with_answers = $file_contents_with_answers . ++$qs["position"] . ") " . "<strong>" . unicode_decode($qs["prompt"]) . "</strong>" . "Explanation: " . unicode_decode($qs["text_explanation"]) . "<br><br>";
+                        $file_contents_with_questions = $file_contents_with_questions . $qs["position"] . ") " . "<strong>" . unicode_decode($qs["prompt"]) . "</strong>" . "<br><br>";
                         foreach ($result["choices"] as $ch) {
                             if ($ch["question_id"] == $qs["id"]) {
                                 $ans = base64_decode($ch["credited"]);
                                 $ans = preg_replace('/\d/', '', $ans);
                                 if ($ans == "true") {
-                                    $file_contents .= "<em style='color: red;'>" . $choice++ . ") " . unicode_decode($ch["text"]) . "</em>";
+                                    $file_contents_with_answers .= "<em style='color: red;'>" . $choice++ . ") " . unicode_decode($ch["text"]) . "</em>";
                                 } else {
-                                    $file_contents .= $choice++ . ") " . unicode_decode($ch["text"]);
+                                    $file_contents_with_answers .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
                                 }
+                                $file_contents_with_questions .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
 
                             }
                         }
-                        $file_contents .= "<br>";
                     }
-                    $myfile = fopen($fname, "w");
-                    fwrite($myfile, $file_contents);
+                    $myfile = fopen($qname, "w");
+                    fwrite($myfile, $file_contents_with_questions);
                     fclose($myfile);
+
+                    $myfile = fopen($fname, "w");
+                    fwrite($myfile, $file_contents_with_answers);
+                    fclose($myfile);
+
                     chdir($prev_dir);
                     $index++;
                 }
@@ -282,8 +288,28 @@ function chapterwise_download($datas)
                 {
 
                 }
+
+                if ($content["contentable_type"] == "Audio") // Download Audios
+                {
+                    echo "Downloading " . $content["name"] . PHP_EOL;
+                    // format : "https://".$p['host']."/api/course_player/v2/audio/".CONTENTABLE-ID
+                    $dc = $index . '. ' . $content["name"];
+                    $dc = filter_filename($dc);
+                    mkdir($dc, 0777);
+                    $prev_dir = getcwd();
+                    chdir($dc);
+
+                    $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/audio/" . $content["contentable"]), true);
+                    $audio_url = $result["audio"]["url"];
+                    $parts = parse_url($audio_url);
+                    $fileName = filter_filename(urldecode(basename($parts["path"])));
+                    downloadFileChunked($audio_url, $fileName);
+
+                    chdir($prev_dir);
+                    $index++;
+                }
                 
-                if ($content["contentable_type"] == "Presentation") // Download Presentation PDFs and Audios
+                if ($content["contentable_type"] == "Presentation") // Download Presentation PDFs with content audio
                 {
                     echo "Downloading " . $content["name"] . PHP_EOL;
                     // format : "https://".$p['host']."/api/course_player/v2/presentations/".CONTENTABLE-ID
