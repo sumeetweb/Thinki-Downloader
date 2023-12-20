@@ -113,7 +113,7 @@ function chapterwise_download($datas)
                         foreach($temp["download_files"] as $download_file) {
                             $download_file_name = $download_file["label"];
                             $download_file_url = $download_file["download_url"];
-                            fdownload($download_file_url, $download_file_name);
+                            downloadFileChunked($download_file_url, $download_file_name);
                         }
                     }
 
@@ -189,7 +189,7 @@ function chapterwise_download($datas)
                         foreach($temp["download_files"] as $download_file) {
                             $download_file_name = $download_file["label"];
                             $download_file_url = $download_file["download_url"];
-                            fdownload($download_file_url, $download_file_name);
+                            downloadFileChunked($download_file_url, $download_file_name);
                         }
                     }
 
