@@ -111,7 +111,7 @@ function chapterwise_download($datas)
 
                     if(!empty($temp["download_files"])) {
                         foreach($temp["download_files"] as $download_file) {
-                            $download_file_name = $download_file["label"];
+                            $download_file_name = filter_filename($download_file["label"]);
                             $download_file_url = $download_file["download_url"];
                             downloadFileChunked($download_file_url, $download_file_name);
                         }
@@ -187,7 +187,7 @@ function chapterwise_download($datas)
                     
                     if(!empty($temp["download_files"])) {
                         foreach($temp["download_files"] as $download_file) {
-                            $download_file_name = $download_file["label"];
+                            $download_file_name = filter_filename($download_file["label"]);
                             $download_file_url = $download_file["download_url"];
                             downloadFileChunked($download_file_url, $download_file_name);
                         }
@@ -278,7 +278,7 @@ function chapterwise_download($datas)
                     chdir($dc);
                     $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/downloads/" . $content["contentable"]), true);
                     foreach ($result["download_files"] as $res) {
-                        downloadFileChunked($res["download_url"], $res["label"]);
+                        downloadFileChunked($res["download_url"], filter_filename($res["label"]));
                     }
                     chdir($prev_dir);
                     $index++;
