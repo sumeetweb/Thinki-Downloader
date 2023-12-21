@@ -221,11 +221,12 @@ function chapterwise_download($datas)
                                 $ans = base64_decode($ch["credited"]);
                                 $ans = preg_replace('/\d/', '', $ans);
                                 if ($ans == "true") {
+                                    $file_contents_with_questions .= $choice . ") " . unicode_decode($ch["text"]) . "<br>";
                                     $file_contents_with_answers .= "<em style='color: red;'>" . $choice++ . ") " . unicode_decode($ch["text"]) . "</em>";
                                 } else {
+                                    $file_contents_with_questions .= $choice . ") " . unicode_decode($ch["text"]) . "<br>";
                                     $file_contents_with_answers .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
                                 }
-                                $file_contents_with_questions .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
 
                             }
                         }
