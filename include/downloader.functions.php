@@ -111,9 +111,9 @@ function chapterwise_download($datas)
 
                     if(!empty($temp["download_files"])) {
                         foreach($temp["download_files"] as $download_file) {
-                            $download_file_name = $download_file["label"];
+                            $download_file_name = filter_filename($download_file["label"]);
                             $download_file_url = $download_file["download_url"];
-                            fdownload($download_file_url, $download_file_name);
+                            downloadFileChunked($download_file_url, $download_file_name);
                         }
                     }
 
@@ -187,9 +187,9 @@ function chapterwise_download($datas)
                     
                     if(!empty($temp["download_files"])) {
                         foreach($temp["download_files"] as $download_file) {
-                            $download_file_name = $download_file["label"];
+                            $download_file_name = filter_filename($download_file["label"]);
                             $download_file_url = $download_file["download_url"];
-                            fdownload($download_file_url, $download_file_name);
+                            downloadFileChunked($download_file_url, $download_file_name);
                         }
                     }
 
@@ -221,11 +221,12 @@ function chapterwise_download($datas)
                                 $ans = base64_decode($ch["credited"]);
                                 $ans = preg_replace('/\d/', '', $ans);
                                 if ($ans == "true") {
+                                    $file_contents_with_questions .= $choice . ") " . unicode_decode($ch["text"]) . "<br>";
                                     $file_contents_with_answers .= "<em style='color: red;'>" . $choice++ . ") " . unicode_decode($ch["text"]) . "</em>";
                                 } else {
+                                    $file_contents_with_questions .= $choice . ") " . unicode_decode($ch["text"]) . "<br>";
                                     $file_contents_with_answers .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
                                 }
-                                $file_contents_with_questions .= $choice++ . ") " . unicode_decode($ch["text"]) . "<br>";
 
                             }
                         }
@@ -278,7 +279,7 @@ function chapterwise_download($datas)
                     chdir($dc);
                     $result = json_decode(query("https://" . $p['host'] . "/api/course_player/v2/downloads/" . $content["contentable"]), true);
                     foreach ($result["download_files"] as $res) {
-                        downloadFileChunked($res["download_url"], $res["label"]);
+                        downloadFileChunked($res["download_url"], filter_filename($res["label"]));
                     }
                     chdir($prev_dir);
                     $index++;
