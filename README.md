@@ -6,12 +6,11 @@
 # Thinki-Downloader
 A php based utility to download courses from Thinkific based sites like PacktPub for personal offline use.  
 
-Note: Try out the `fix-lesson-dl` branch if main branch doesn't work!
-
 If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-## ***Revision 6.3.3 ~ 20th December 2023***
+## ***Revision 6.3.4 ~ 1st May 2024***
 
+!FIX! File names filtered for unicode characters
 !NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
 !FIX! "wistia" and "videoproxy" Lesson Downloads Fixed!  
 !HOT! Quality Selection for Video Downloads!  
@@ -78,7 +77,7 @@ For selective downloads, please checkout [Thinki-Parser v0.0.1 Experimental Supp
 Then pass --json flag and file path of course data file.  
 
 Also, please change .env file accordingly.  
-> If using docker, run (without ffmpeg):
+> If using docker, run:
 ```bash
 docker-compose -f compose.selective.yaml up
 ```
@@ -101,11 +100,6 @@ php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
 2. Surveys  
 3. Assignments  
 
-### Tested Using :  
-- PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
-- Ubuntu, CentOS 7, Windows
-- Docker
-- FFmpeg
 
 
 If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!  
@@ -113,6 +107,9 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
 Thank you to all the contributors and supporters :)  
+- chrisg
+- Gregory
+- MJ
 - GiorgioG
 - Gbemi
 - Eric
