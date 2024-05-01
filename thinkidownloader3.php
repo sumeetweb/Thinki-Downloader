@@ -3,10 +3,10 @@ set_time_limit(0);
 require("config.php");
 $pwd = '';
 $root_project_dir = '';
-$revision = "Revision 6.3.2 ~ 16th December 2023";
+$revision = "Revision 6.3.4 ~ 1st May 2024";
 
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
-echo "THINKIFIC DOWNLOADER".PHP_EOL.$revision.PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL."Want to download only selected videos? Thinki-Parser Experimental is available!".PHP_EOL;
+echo "THINKIFIC DOWNLOADER".PHP_EOL.$revision.PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL."Want to download only selected videos? Thinki-Parser Experimental is available! ".PHP_EOL;
 echo "----------------------------------------------------------".PHP_EOL;
 require("include/file.functions.php");
 require("include/downloader.functions.php");
