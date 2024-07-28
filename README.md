@@ -8,7 +8,7 @@ A php based utility to download courses from Thinkific based sites like PacktPub
 
 If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-If you want to migrate from Thinkific and export your data, ping me at hello@sumeetnaik.com  
+If you are a course maintainer and want to migrate from Thinkific, ping me at hello@sumeetnaik.com  
 
 ## ***Revision 6.3.4 ~ 1st May 2024***
 
