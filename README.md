@@ -146,9 +146,12 @@ The following are currently planned:
 2. Surveys  
 3. Assignments  
 
-### Tested Using :  
+### Test Environment
+
+The current solution has been tested on the following systeM:
+
 - PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
-- Ubuntu, CentOS 7, Windows
+- Ubuntu, CentOS 7, Windows, Manjaro
 - Docker
 - FFmpeg
 
