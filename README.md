@@ -128,7 +128,7 @@ php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
 > [!CAUTION]
 > This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
-### Supported formated
+### Supported formats
 
 The following formats are currently supported:
 
