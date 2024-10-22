@@ -61,15 +61,30 @@ function chapterwise_download($datas)
                     # Find a string similar to https://platform.thinkific.com/videoproxy/v1/play/*
                     $regex = '/https:\/\/platform.thinkific.com\/videoproxy\/v1\/play\/[a-zA-Z0-9]+/';
                     preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
-                    $first_set_matches = array_unique($matches, SORT_REGULAR);
-                    // print_r($first_set_matches);
-                    
-                    if(empty($first_set_matches)) {
-                        echo "No matches found for videos in HTML Item. Continuing...";
-                    } else {
-                        foreach($first_set_matches as $match) {
-                            $video_url = $match[0];
-                            video_downloader_videoproxy($video_url, $content["name"], $video_download_quality);
+                    $video_set_matches = array_unique($matches, SORT_REGULAR);
+                    // print_r($video_set_matches);
+
+                    # Find mp3 files inside source, should contain "https://" "thinkific.com" and ".mp3"
+                    $regex = '/https:\/\/[^"]+\.mp3/';
+                    preg_match_all($regex, $temp2, $audio_matches, PREG_SET_ORDER, 0);
+                    $audio_matches = array_unique($audio_matches, SORT_REGULAR);
+
+                    if (empty($video_set_matches) && empty($audio_matches)) {
+                        echo "No matches found for videos or audio in HTML Item. Continuing...";
+                    } else {                        
+                        if (!empty($video_set_matches)) {
+                            foreach ($video_set_matches as $match) {
+                                $video_url = $match[0];
+                                video_downloader_videoproxy($video_url, $content["name"], $video_download_quality);
+                            }
+                        }
+
+                        if (!empty($audio_matches)) {
+                            foreach ($audio_matches as $match) {
+                                $audio_url = $match[0];
+                                $audio_name = filter_filename(basename($audio_url));
+                                downloadFileChunked($audio_url, $audio_name);
+                            }
                         }
                     }
 
