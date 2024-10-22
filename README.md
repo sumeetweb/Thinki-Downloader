@@ -15,20 +15,39 @@ Update : Thanks to everyone who mailed and messaged on Twitter. I have decided n
 
 If you want to support the project, consider [buying me some coffee](https://ko-fi.com/sumeet) for motivation!  
 
-## ***Revision 6.3.2 ~ 16th December 2023***
+## How do
 
-!NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
-!FIX! "wistia" and "videoproxy" Lesson Downloads Fixed!  
-!HOT! Quality Selection for Video Downloads!  
-!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
-!NEW! FFMPEG Support in Docker Image!  
+### Prepare your environment
 
-## Steps:
+First clone the repo or download the zip file and unpack it.
+
 1. Clone this repo or download the zip file.
 2. If you have PHP >= 7.4.13 installed locally in your system, you can use this script directly. Skip to step 4(b).
 3. Install Docker: [docker.com](https://www.docker.com/), and ffmpeg: [ffmpeg.org](https://ffmpeg.org/). (ffmpeg is optional, but recommended for merging audio and video files of presentations)
-4. (a) 
-> > For Docker Method, create or modify existing .env file in the root directory of the project and add the following lines:
+
+Now you're ready to set your `.env` file and use the solution (Docker or Direct).
+
+
+### Get your course URL, cookie and URL
+
+[![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/owi-cOcpceI/0.jpg)](https://www.youtube.com/watch?v=owi-cOcpceI)  
+[📺 Watch guide](https://www.youtube.com/watch?v=owi-cOcpceI)  
+
+In the folder, you'll fine a .env file. If you're not seeing it, open it with a terminal, or enable "Show hidden files" on your operation system. If you're going to use the direct php method, you'll need to update the config.php instead.
+
+- Open up your browser, and open the Dev Tool. If you're unsure on how to do that, search for "Dev Tool {BROWSER NAME}" on Google. Normally F12 will open it.
+- Go to the "Network tab"
+- Search after `course_player/v2/courses/`
+- Click on the matched request (there should be one)
+- I'd suggest to click on the "Raw"
+- First adjust the COURSE_LINK in the .env file
+- Now look after the "set-cookie" and copy the valye into "COOKIE_DATA"
+- Lastly copy the "date" value into "CLIENT_DATE"
+
+At this point, you should have changed the value of `COURSE_LINK`, `COOKIE_DATA` and `CLIENT_DATA`.
+
+The blank version of the .env file looks like this:
+
 ```bash
 COURSE_LINK=""
 
@@ -44,15 +63,49 @@ COOKIE_DATA=""
 VIDEO_DOWNLOAD_QUALITY="720p"
 ```
 
+### Configure the downloader
+
 If you want to merge audio and video files of presentations, install ffmpeg and set the following flag to true in config.php file, modify the following lines:
 ```php
 $FFMPEG_PRESENTATION_MERGE_FLAG = true;
 ```
 
-> > Follow the video to set cookie data and client date in the .env file.  
+ffmpeg are already included in the Docker image.
 
-4. (b)
-> > For Direct Method, edit config.php file and modify :
+### Preparing selective download
+
+If you'd like to make a selective download,  please checkout [Thinki-Parser v0.0.1 Experimental Support](https://sumeetweb.github.io/Thinki-Parser/) and generate course data file.  
+
+Then pass --json flag and file path of course data file. There's a example for each solution below.
+
+Remember to update the `.env` and set the `COURSE_DATA_FILE` variable.
+
+### Running the software
+
+#### Using docker
+
+> [!NOTE]
+> On some systems, docker-compose should be called with `docker compose` instead of `docker-compose`
+
+Start the solution with:
+
+```bash
+docker-compose -f compose.yaml up
+```
+
+If you'd like to us the selective JSON file, remember to set the path of the JSON file in .env as `COURSE_DATA_FILE`.
+
+Hereafter, simply fun:
+
+```bash
+docker-compose -f compose.selective.yaml up
+```
+
+
+#### Using the PHP script direcly on host machine
+
+For Direct Method, remember to edit the config.php file and modify :
+
 ```php
 $clientdate = "PASTE CLIENT DATE HERE";
 $cookiedata = "PASTE COOKIE DATA HERE";
@@ -63,61 +116,59 @@ $video_download_quality = "720p";
 // Set the following flag to true if you want to merge audio and video files of presentations
 $FFMPEG_PRESENTATION_MERGE_FLAG = true;
 ```
-> > Updated Video :  
-> > [![How to use Thinkifi-Downloader|width=100px](https://img.youtube.com/vi/owi-cOcpceI/0.jpg)](https://www.youtube.com/watch?v=owi-cOcpceI)  
-> > https://www.youtube.com/watch?v=owi-cOcpceI  
+ 
+Now simply run:
 
-> * $COURSE_LINK FORMAT : `https://URL-OF-WEBSITE/api/course_player/v2/courses/COURSE-NAME-SLUG`  
-
-5. Run the following command in the root directory of the project:
-> If using docker, run:
-```bash
-docker-compose up
-```
-> If using direct script, run:
 ```bash
 php thinkidownloader3.php LINK_HERE
 ```
 
-For selective downloads, please checkout [Thinki-Parser v0.0.1 Experimental Support](https://sumeetweb.github.io/Thinki-Parser/) and generate course data file.  
-Then pass --json flag and file path of course data file.  
+If you're using the selective download method, provide the JSON path with:
 
-Also, please change .env file accordingly.  
-> If using docker, run (without ffmpeg):
-```bash
-docker-compose -f compose.selective.yaml up
-```
-> If using direct script, run:
 ```bash
 php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
 ```
 
-#### DISCLAIMER: This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
-### Currently Downloads :  
+> [!CAUTION]
+> This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
+
+### Supported formated
+
+The following formats are currently supported:
+
 1. Notes  
-2. Videos  
+2. Videos
 3. Shared Files  
 4. Quiz with Answers  
 5. Presentations PDFs or PPTs (Added FFMPEG support to merge audio and video files)  
+6. Audio
 
-### Planned :  
+
+The following are currently planned:
+
 1. Discussions Page  
 2. Surveys  
 3. Assignments  
 
-### Tested Using :  
+### Technical details
+
+This solution have been tested on:
+
 - PHP v7.4.13 (cli) (built: Nov 24 2020 12:43:32) ( ZTS Visual C++ 2017 x64 )  
 - Ubuntu, CentOS 7, Windows
 - Docker
 - FFmpeg
 
 
+### Support
+
 If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!  
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O74Z4Q2)  
 
-Thank you to all the contributors and supporters :)  
+
+**Thank you to all the contributors and supporters :)**
 - GiorgioG
 - Gbemi
 - Eric
@@ -138,3 +189,23 @@ Thank you to all the contributors and supporters :)
 - Paras
 - Thinker
 - Alex
+- exetico
+
+
+### Changelog
+
+#### ***Revision 6.3.2 ~ 16th December 2023***
+
+!NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
+!FIX! "wistia" and "videoproxy" Lesson Downloads Fixed!  
+!HOT! Quality Selection for Video Downloads!  
+!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
+!NEW! FFMPEG Support in Docker Image!  
+
+#### ***Revision 6.3.4***
+
+!FIX! Fix issues with File Names and Downloads
+
+#### ***Revision 6.3.5***
+
+!NEW! Added support for mp3 in courses
