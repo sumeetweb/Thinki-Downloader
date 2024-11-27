@@ -10,7 +10,7 @@ If you want to support the project, consider [buying me some coffee](https://ko-
 
 If you are a course maintainer and want to migrate from Thinkific, ping me at hello@sumeetnaik.com  
 
-## How do
+## How To Use:
 
 ### Prepare your environment
 
@@ -69,7 +69,7 @@ ffmpeg are already included in the Docker image.
 
 ### Preparing selective download
 
-If you'd like to make a selective download,  please checkout [Thinki-Parser v0.0.1 Experimental Support](https://sumeetweb.github.io/Thinki-Parser/) and generate course data file.  
+If you'd like to make a selective download, checkout [Thinki-Parser v0.0.1 Experimental Support](https://sumeetweb.github.io/Thinki-Parser/) and generate course data file.  
 
 Then pass --json flag and file path of course data file. There's a example for each solution below.
 
@@ -194,18 +194,8 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 
 ### Changelog
 
-#### ***Revision 6.3.2 ~ 16th December 2023***
-
-!NEW! [Thinki-Parser v0.0.1 Experimental Support Added](https://sumeetweb.github.io/Thinki-Parser/)  
-!FIX! "wistia" and "videoproxy" Lesson Downloads Fixed!  
-!HOT! Quality Selection for Video Downloads!  
-!HOT! Presentation Downloads with FFMPEG support to merge audio and video files!  
-!NEW! FFMPEG Support in Docker Image!  
-
-#### ***Revision 6.3.4***
-
-!FIX! Fix issues with File Names and Downloads
+#### ***Revision 6.4 ~ 27th November 2024***
+!FIX! "wistia" and "videoproxy" Lesson Downloads Fixed for HtmlItem and Quiz Content Types!  
 
 #### ***Revision 6.3.5***
-
 !NEW! Added support for mp3 in courses
