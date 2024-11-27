@@ -88,8 +88,10 @@ function chapterwise_download($datas)
                         }
                     }
 
-                    # Find a string similar to https://fast.wistia.net/embed/iframe/*
-                    $regex = '/https:\/\/fast.wistia.net\/embed\/iframe\/[a-zA-Z0-9]+/';
+                    # Find a string similar to //fast.wistia.net/embed/iframe/*
+                    // $regex = '/\/\/fast.wistia.net\/embed\/iframe\/[a-zA-Z0-9]+/';
+                    $regex = '/(?:\w+\.)?(wistia\.(?:com|net)|wi\.st)\/(?:medias|embed\/(?:iframe|medias))\/([a-zA-Z0-9]+)/';
+
                     preg_match_all($regex, $temp2, $matches, PREG_SET_ORDER, 0);
                     $first_set_matches = array_unique($matches, SORT_REGULAR);
 
@@ -218,7 +220,8 @@ function chapterwise_download($datas)
 
                         $decoded_prompt = unicode_decode($qs["prompt"]);
 
-                        $pattern = '/fast.wistia.net\/embed\/iframe\/[a-zA-Z0-9]+/';
+                        // $pattern = '/fast.wistia.net\/embed\/iframe\/[a-zA-Z0-9]+/';
+                        $pattern = '/(?:\w+\.)?(wistia\.(?:com|net)|wi\.st)\/(?:medias|embed\/(?:iframe|medias))\/([a-zA-Z0-9]+)/';
                         preg_match_all($pattern, $decoded_prompt, $matches, PREG_SET_ORDER, 0);
                         $first_set_matches = array_unique($matches, SORT_REGULAR);
                         if(!empty($first_set_matches)) {
