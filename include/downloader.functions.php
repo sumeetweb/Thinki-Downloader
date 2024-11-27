@@ -69,22 +69,20 @@ function chapterwise_download($datas)
                     preg_match_all($regex, $temp2, $audio_matches, PREG_SET_ORDER, 0);
                     $audio_matches = array_unique($audio_matches, SORT_REGULAR);
 
-                    if (empty($video_set_matches) && empty($audio_matches)) {
-                        echo "No matches found for videos or audio in HTML Item. Continuing...";
-                    } else {                        
-                        if (!empty($video_set_matches)) {
-                            foreach ($video_set_matches as $match) {
-                                $video_url = $match[0];
-                                video_downloader_videoproxy($video_url, filter_filename($content["name"]), $video_download_quality);
-                            }
+                    if (!empty($video_set_matches)) {
+                        echo "Found Videoproxy in HTML Item".PHP_EOL;
+                        foreach ($video_set_matches as $match) {
+                            $video_url = $match[0];
+                            video_downloader_videoproxy($video_url, filter_filename($content["name"]), $video_download_quality);
                         }
+                    }
 
-                        if (!empty($audio_matches)) {
-                            foreach ($audio_matches as $match) {
-                                $audio_url = $match[0];
-                                $audio_name = filter_filename(basename($audio_url));
-                                downloadFileChunked($audio_url, $audio_name);
-                            }
+                    if (!empty($audio_matches)) {
+                        echo "Found Audios in HTML Item".PHP_EOL;
+                        foreach ($audio_matches as $match) {
+                            $audio_url = $match[0];
+                            $audio_name = filter_filename(basename($audio_url));
+                            downloadFileChunked($audio_url, $audio_name);
                         }
                     }
 
@@ -96,12 +94,13 @@ function chapterwise_download($datas)
                     $first_set_matches = array_unique($matches, SORT_REGULAR);
 
                     if(!empty($first_set_matches)) {
+                        echo "Found Wistia Videos in HTML Item".PHP_EOL;
                         foreach($first_set_matches as $match) {
                             $embed_video_url = $match[0];
 
                             $wistia_id = explode("/", $embed_video_url);
                             $wistia_id = end($wistia_id);
-                            video_downloader_wistia($wistia_id, $fname, $video_download_quality);
+                            video_downloader_wistia($wistia_id, filter_filename($content["name"]), $video_download_quality);
                         }
                     }
 
