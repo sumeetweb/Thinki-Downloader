@@ -38,10 +38,7 @@ function video_downloader_wistia($wistia_id, $file_name, $quality = "720p") {
     }
 
     $full_hd_url = $video_assets[$video_assets_index]["url"];
-    if($final_video_data["media"]["assets"][$video_assets_index]["ext"] == "")
-        $file_name = $file_name.".mp4";
-    else
-        $file_name = $file_name.".".$final_video_data["media"]["assets"][$video_assets_index]["ext"];
+    $file_name = filter_filename($final_video_data["media"]["name"]);
 
     echo "URL : ".$full_hd_url."\n";
     echo "File Name : ".$file_name."\n";
