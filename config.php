@@ -38,6 +38,10 @@ function load_env($filePath){
 			continue;
 		}
 
+		// Skip lines without '='
+		if (strpos($line, '=') === false) {
+			continue;
+		}
 		// Split by '=' to separate key and value
 		$parts = array_map('trim', explode('=', $line, 2));
 		if (count($parts) < 2) {
