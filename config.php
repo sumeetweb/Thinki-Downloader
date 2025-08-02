@@ -39,7 +39,12 @@ function load_env($filePath){
 		}
 
 		// Split by '=' to separate key and value
-		[$name, $value] = array_map('trim', explode('=', $line, 2));
+		$parts = array_map('trim', explode('=', $line, 2));
+		if (count($parts) < 2) {
+			// Skip lines that don't contain '='
+			continue;
+		}
+		[$name, $value] = $parts;
 
 		// Remove surrounding quotes from the value
 		$value = trim($value, "'\"");
