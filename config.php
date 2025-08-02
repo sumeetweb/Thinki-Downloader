@@ -17,7 +17,7 @@ if(!extension_loaded('mbstring'))
 	$msg .= 'Mbstring extension not enabled. Remove ; from php.ini config in the line ;extension=mbstring\n';
 if(!extension_loaded('openssl'))
 	$msg .= 'Openssl not enabled in php.ini\n';
-if(!$current_directory_path)
+if($current_directory_path === false)
 	$msg .= 'Unable to get current working directory. Check if PHP or current terminal has permission to access the directory\n';
 if(!is_writable($current_directory_path))
 	$msg .= 'Current directory is not writable. Check if PHP or current terminal has permission to write in the directory\n';
