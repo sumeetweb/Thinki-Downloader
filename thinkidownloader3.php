@@ -27,7 +27,11 @@ if( (in_array("--json", $argv) && isset($argv[2])) || !in_array(getenv("COURSE_D
 		$json = file_get_contents($argv[2]);
 	} else {
 		echo "Loading Custom Metadata File from .env for course data.".PHP_EOL;
-		$json = file_get_contents(getenv("COURSE_DATA_FILE"));
+		$courseDataFile = getenv("COURSE_DATA_FILE");
+		if (!file_exists($courseDataFile)) {
+			die("File not found: ".$courseDataFile.PHP_EOL);
+		}
+		$json = file_get_contents($courseDataFile);
 	}
 
 	$data = json_decode($json, true);
