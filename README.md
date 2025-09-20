@@ -99,20 +99,37 @@ docker-compose -f compose.selective.yaml up
 
 #### Using the PHP script direcly on host machine
 
-For Direct Method, remember to edit the config.php file and modify :
+For Direct Method, remember to edit the .env file and modify :
 
-```php
-$clientdate = "PASTE CLIENT DATE HERE";
-$cookiedata = "PASTE COOKIE DATA HERE";
-// Set the video download quality. Default is 720p.
-// Available Options: "Original File", "1080p", "720p", "540p", "360p", "224p"
-$video_download_quality = "720p";
+```bash
+COURSE_LINK=""
 
-// Set the following flag to true if you want to merge audio and video files of presentations
-$FFMPEG_PRESENTATION_MERGE_FLAG = true;
+# If using selective download, add the following line and add the path of course data file downloaded from Thinki-Parser
+COURSE_DATA_FILE=""
+
+# Watch YouTube video to know how to get the client date and cookie data
+CLIENT_DATE=""
+COOKIE_DATA=""
+
+# Set the video download quality. Default is 720p.
+# Available Options: "Original File", "1080p", "720p", "540p", "360p", "224p"
+VIDEO_DOWNLOAD_QUALITY="720p"
 ```
  
-Now simply run:
+
+NOTE: Priority of COURSE_DATA_FILE is higher than COURSE_LINK. If COURSE_DATA_FILE is set, COURSE_LINK will be ignored.  
+Arguments passed to script in terminal override the values in .env file.  
+
+The priority order is (Highest to Lowest):  
+1. COURSE_DATA_FILE (if set) Terminal > .env  
+2. COURSE_LINK (if set) Terminal > .env  
+
+Now simply run:  
+```bash
+php thinkidownloader3.php
+```
+
+You can override the course link or course data file by providing it as an argument:
 
 ```bash
 php thinkidownloader3.php LINK_HERE
@@ -123,6 +140,7 @@ If you're using the selective download method, provide the JSON path with:
 ```bash
 php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
 ```
+
 
 
 > [!CAUTION]
