@@ -1,12 +1,51 @@
 <?php
 // MAIN FUNCTIONS
 
+// Global course progress tracking
+$GLOBALS['course_progress'] = [
+    'total_items' => 0,
+    'completed_items' => 0,
+    'current_chapter' => 0,
+    'total_chapters' => 0
+];
+
+function update_course_progress($message = '') {
+    global $course_progress;
+    $course_progress['completed_items']++;
+    $percentage = 0;
+    if ($course_progress['total_items'] > 0) {
+        $percentage = round(($course_progress['completed_items'] / $course_progress['total_items']) * 100, 1);
+    }
+    echo "----------------------------------------------" . PHP_EOL;
+    echo "Overall Course Progress: " . $percentage . "% (" . $course_progress['completed_items'] . "/" . $course_progress['total_items'] . " items)" . PHP_EOL;
+    if ($message) {
+        echo $message . PHP_EOL;
+    }
+    echo "----------------------------------------------" . PHP_EOL;
+}
+
+function count_total_items($datas) {
+    global $course_progress;
+    $course_progress['total_chapters'] = count($datas["chapters"]);
+    $total = 0;
+    foreach ($datas["chapters"] as $chapter) {
+        $total += count($chapter["content_ids"]);
+    }
+    $course_progress['total_items'] = $total;
+    echo "Total items to download: " . $total . " across " . $course_progress['total_chapters'] . " chapters" . PHP_EOL;
+    echo "----------------------------------------------" . PHP_EOL;
+}
+
 function init_course($datas)
 {
     global $pwd, $root_project_dir;
     $course_name = filter_filename($datas["course"]["name"]);
     $prev_dir = getcwd();
     $root_project_dir = getcwd();
+    
+    // Count total items before starting
+    count_total_items($datas);
+    
     //Create course folder and go inside
     mkdir($course_name, 0777);
     chdir($course_name);
@@ -14,13 +53,17 @@ function init_course($datas)
     // Init Done.
     create_chap_folder($datas);
     chdir($prev_dir);
+    
+    echo PHP_EOL . "Course download completed!" . PHP_EOL;
 }
 
 function create_chap_folder($datas)
 {
-    global $pwd;
+    global $pwd, $course_progress;
     $i = 1;
     foreach ($datas["chapters"] as $data) {
+        $course_progress['current_chapter'] = $i;
+        echo PHP_EOL . "=== Chapter " . $i . "/" . $course_progress['total_chapters'] . ": " . $data["name"] . " ===" . PHP_EOL;
         $chap_folder_name = "$i. " . filter_filename($data["name"]);
         mkdir($chap_folder_name, 0777);
         $prev_dir = getcwd();
@@ -110,6 +153,7 @@ function chapterwise_download($datas)
                     fclose($myfile);
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
 
                 if ($content["default_lesson_type_label"] == "Multimedia") //Download multimedia type
@@ -147,6 +191,7 @@ function chapterwise_download($datas)
                     fclose($myfile);
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
 
                 if ($content["contentable_type"] == "Lesson") // To download videos
@@ -196,6 +241,7 @@ function chapterwise_download($datas)
 
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                     //}
                 }
 
@@ -258,6 +304,7 @@ function chapterwise_download($datas)
 
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
 
                 if ($content["contentable_type"] == "Assignment") // Download assignment
@@ -283,6 +330,7 @@ function chapterwise_download($datas)
                     downloadFileChunked($pdf_url, $fileName);
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
 
                 if ($content["contentable_type"] == "Download") // Download shared files
@@ -300,6 +348,7 @@ function chapterwise_download($datas)
                     }
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
 
                 if ($content["contentable_type"] == "Survey") // Download Survey page
@@ -325,6 +374,7 @@ function chapterwise_download($datas)
 
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
                 
                 if ($content["contentable_type"] == "Presentation") // Download Presentation PDFs with content audio
@@ -435,6 +485,7 @@ function chapterwise_download($datas)
 
                     chdir($prev_dir);
                     $index++;
+                    update_course_progress("Completed: " . $content["name"]);
                 }
             }
         }
@@ -564,15 +615,44 @@ function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = t
     if ($handle === false) {
         return false;
     }
+    
+    // Get file size for progress calculation
+    $fileSize = 0;
+    $meta = stream_get_meta_data($handle);
+    if (isset($meta['wrapper_data'])) {
+        foreach ($meta['wrapper_data'] as $header) {
+            if (stripos($header, 'Content-Length:') !== false) {
+                $fileSize = (int) trim(substr($header, strpos($header, ':') + 1));
+                break;
+            }
+        }
+    }
+    
+    $lastProgress = -1;
     while (!feof($handle)) {
         $data = fread($handle, $chunksize);
         fwrite($fp, $data, strlen($data));
         if ($returnbytes) {
             $bytesCount += strlen($data);
         }
+        
+        // Display progress percentage
+        if ($fileSize > 0) {
+            $progress = floor(($bytesCount / $fileSize) * 100);
+            if ($progress > $lastProgress && $progress % 10 == 0) {
+                echo "Progress: " . $progress . "% (" . formatBytes($bytesCount) . " / " . formatBytes($fileSize) . ")" . PHP_EOL;
+                $lastProgress = $progress;
+            }
+        }
     }
     $status = fclose($handle);
     fclose($fp);
+    
+    // Show completion
+    if ($fileSize > 0) {
+        echo "Progress: 100% (" . formatBytes($bytesCount) . " / " . formatBytes($fileSize) . ") - Complete!" . PHP_EOL;
+    }
+    
     if ($returnbytes && $status) {
         return $bytesCount; // Return number of bytes delivered like readfile() does.
     }
