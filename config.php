@@ -6,6 +6,7 @@ $clientdate = $_ENV['CLIENT_DATE'];
 $cookiedata = $_ENV['COOKIE_DATA'];
 $video_download_quality = $_ENV['VIDEO_DOWNLOAD_QUALITY'];
 $FFMPEG_PRESENTATION_MERGE_FLAG = false;
+$ENABLE_PARALLEL_DOWNLOADS = isset($_ENV['ENABLE_PARALLEL_DOWNLOADS']) ? filter_var($_ENV['ENABLE_PARALLEL_DOWNLOADS'], FILTER_VALIDATE_BOOLEAN) : true;
 $current_directory_path = getcwd();
 $msg = '';
 
