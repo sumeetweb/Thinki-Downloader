@@ -50,6 +50,7 @@ if( (in_array("--json", $argv) && isset($argv[2])) || !in_array(getenv("COURSE_D
 }
 
 function handler($courseUrl) {
+	global $contentsdata, $p;
 	$url = query($courseUrl);
 	$p = parse_url($courseUrl);
 	$path = $p;
