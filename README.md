@@ -56,7 +56,13 @@ COOKIE_DATA=""
 # Set the video download quality. Default is 720p.
 # Available Options: "Original File", "1080p", "720p", "540p", "360p", "224p"
 VIDEO_DOWNLOAD_QUALITY="720p"
+
+# Enable parallel downloads (max 3 concurrent downloads as per Thinkific's limit)
+# Set to "true" or "false"
+ENABLE_PARALLEL_DOWNLOADS="true"
 ```
+
+**Note about video quality selection:** Lower quality settings like "360p" or "540p" will result in significantly smaller file sizes compared to "1080p" or "Original File", while maintaining reasonable video quality. This is useful for saving storage space when downloading large courses.
 
 ### Configure the downloader
 
@@ -146,6 +152,50 @@ php thinkidownloader3.php --json COURSE_DATA_FILE_PATH
 > [!CAUTION]
 > This script only downloads enrolled courses from thinkific based website. Owner of this repository is not responsible for any misuse if you share your credentials with strangers.  
 
+### Features
+
+#### Download Progress Tracking
+The downloader now displays real-time progress information:
+- **Individual file progress**: Shows percentage and bytes downloaded for each file (updated every 10%)
+- **Overall course progress**: Displays completion percentage across all course items
+- **Chapter tracking**: Shows current chapter being downloaded
+
+Example output:
+```
+=== Chapter 1/5: Introduction ===
+Downloading Video : Getting Started
+Progress: 30% (45.2 MB / 150.5 MB)
+Progress: 60% (90.4 MB / 150.5 MB)
+Progress: 100% (150.5 MB / 150.5 MB) - Complete!
+----------------------------------------------
+Overall Course Progress: 12.5% (5/40 items)
+Completed: Getting Started
+----------------------------------------------
+```
+
+#### Video Quality Selection
+Control the quality of downloaded videos to manage file sizes:
+- **Original File**: Download videos in their original uploaded quality (largest size)
+- **1080p, 720p, 540p, 360p, 224p**: Download videos in specified resolution
+- Lower quality settings (360p, 540p) significantly reduce file sizes while maintaining reasonable quality
+- Default is 720p, which provides a good balance between quality and file size
+
+Set quality in `.env` file:
+```bash
+VIDEO_DOWNLOAD_QUALITY="540p"  # Smaller files
+```
+
+#### Parallel Downloads
+Enable downloading multiple files concurrently to speed up the process:
+- Maximum of 3 concurrent downloads (Thinkific's connection limit)
+- Maintains download order and proper error handling
+- Can be enabled/disabled via `.env` file
+
+To enable:
+```bash
+ENABLE_PARALLEL_DOWNLOADS="true"
+```
+
 ### Supported formats
 
 The following formats are currently supported:
@@ -211,6 +261,13 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 
 
 ### Changelog
+
+#### ***Revision 6.5 ~ November 2024***
+!NEW! Added download progress percentage display for individual files  
+!NEW! Added overall course progress tracking with chapter information  
+!NEW! Added parallel downloads support (max 3 concurrent, Thinkific's limit)  
+!ENHANCEMENT! Improved video quality selection with better documentation  
+!ENHANCEMENT! Added human-readable file size display (MB, GB, etc.)  
 
 #### ***Revision 6.4 ~ 27th November 2024***
 !FIX! "wistia" and "videoproxy" Lesson Downloads Fixed for HtmlItem and Quiz Content Types!  

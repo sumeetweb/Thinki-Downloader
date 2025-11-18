@@ -3,7 +3,7 @@ set_time_limit(0);
 require("config.php");
 $pwd = '';
 $root_project_dir = '';
-$revision = "Revision 6.4 ~ 27th November 2024";
+$revision = "Revision 6.5 ~ November 2024";
 
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL.$revision.PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL."Want to download only selected videos? Thinki-Parser is available! : https://sumeetweb.github.io/Thinki-Parser/".PHP_EOL;
