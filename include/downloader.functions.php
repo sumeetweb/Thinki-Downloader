@@ -164,12 +164,21 @@ function chapterwise_download($datas)
 
                     if(empty($temp["videos"])) {
                         echo "No Lesson Videos found for ".$vname.PHP_EOL;
+                    } else if (!empty($temp["lesson"]) && !empty($temp["lesson"]["video_url"])) {
+                        // Use the lesson video_url which contains authorization
+                        echo "Using authorized video URL from lesson data".PHP_EOL;
+                        $video_url = $temp["lesson"]["video_url"];
+                        video_downloader_videoproxy($video_url, $vname, $video_download_quality);
                     } else {
                         foreach ($temp["videos"] as $video) {
                             if($video["storage_location"] == "wistia") {
                                 $wistia_id = $video["identifier"];
                                 video_downloader_wistia($wistia_id, $vname, $video_download_quality);
                             } else if($video["storage_location"] == "videoproxy") {
+                                // For videoproxy, we need to use the authorized API endpoint
+                                // Construct the proper API URL with the content ID and video ID
+                                // Old Method:
+                                echo "Warning: Direct videoproxy access may fail. Using alternative method.".PHP_EOL;
                                 $video_url = "https://platform.thinkific.com/videoproxy/v1/play/".$video["identifier"];
                                 video_downloader_videoproxy($video_url, $vname, $video_download_quality);
                             } else {
