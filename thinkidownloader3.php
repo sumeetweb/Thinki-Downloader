@@ -3,7 +3,7 @@ set_time_limit(0);
 require("config.php");
 $pwd = '';
 $root_project_dir = '';
-$revision = "Revision 6.4 ~ 27th November 2024";
+$revision = "Revision 6.5 ~ Test Build 1 : 00/21/22/11/25";
 
 error_reporting(0); //Disabled for keeping console clean. Set to 1 if you got an error or problem while downloading :)
 echo "THINKIFIC DOWNLOADER".PHP_EOL.$revision.PHP_EOL."Author : SumeetWeb ~ https://github.com/sumeetweb".PHP_EOL."Consider buying me a coffee at : https://www.ko-fi.com/sumeet".PHP_EOL."Want to download only selected videos? Thinki-Parser is available! : https://sumeetweb.github.io/Thinki-Parser/".PHP_EOL;
@@ -41,8 +41,8 @@ if( (in_array("--json", $argv) && isset($argv[2])) || !in_array(getenv("COURSE_D
 	// Use course url from command line. It is higher priority than env.
 	$courseUrl = $argv[1];
 	handler($courseUrl);
-} else if(!in_array(getenv("COURSE_URL"), ["", null, false])) {
-	$courseUrl = getenv("COURSE_URL");
+} else if(!in_array(getenv("COURSE_LINK"), ["", null, false])) {
+	$courseUrl = getenv("COURSE_LINK");
 	handler($courseUrl);
 } else {
 	echo "Usage for using course url: php thinkidownloader3.php <course_url>".PHP_EOL;
