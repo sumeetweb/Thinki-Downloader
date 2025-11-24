@@ -18,7 +18,7 @@ First clone the repo or download the zip file and unpack it.
 
 1. Clone this repo or download the zip file.
 2. If you have PHP >= 7.4.13 installed locally in your system, you can use this script directly. Skip to step 4(b).
-3. Install Docker: [docker.com](https://www.docker.com/), and ffmpeg: [ffmpeg.org](https://ffmpeg.org/). (ffmpeg is optional, but recommended for merging audio and video files of presentations)
+3. Install Docker: [docker.com](https://www.docker.com/), and ffmpeg: [ffmpeg.org](https://ffmpeg.org/). (ffmpeg is REQUIRED now due to support downloading wistia private videos)
 
 Now you're ready to set your `.env` file and use the solution (Docker or Direct).
 
@@ -183,6 +183,7 @@ If you like this work, consider [buying me a coffee](https://ko-fi.com/sumeet)!
 
 **Thank you to all the contributors and supporters 😁!**
 
+- Mauricio
 - exetico
 - chrisg
 - Gregory
