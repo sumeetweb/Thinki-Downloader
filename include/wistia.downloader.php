@@ -5,11 +5,11 @@
  * 
  * Flow for protected videos:
  * 1. Query the lesson's video_url (e.g., .../api/course_player/v2/contents/{content_id}/play/{video_id})
- * 2. Extract Wistia video ID from the HTML iframe response (_wq.push section)
+ * 2. Extract Wistia video ID from the HTML iframe response (medias/*.jsonp hyperlink)
  * 3. Extract JWT token from options.authorization.jwt
  * 4. Query Wistia API (https://fast.wistia.com/embed/medias/{video_id}.json) to get metadata
  * 5. Get account ID and construct protected m3u8 URL with JWT token (pma parameter)
- * 6. Attempt to download .bin file with pma parameter, or fallback to m3u8 download
+ * 6. Attempt to download m3u8 with ffmpeg
  */
 
 function video_downloader_videoproxy($video_url, $file_name, $quality = "720p") {
@@ -26,14 +26,12 @@ function video_downloader_videoproxy($video_url, $file_name, $quality = "720p") 
     $id = "";
     $jwt_token = "";
     
-    # First try: Get the Wistia ID from _wq.push section (for authorized videos)
-    # Pattern matches: id: 'hk38038pvu', or id: "hk38038pvu",
-    $pattern = "/id:\s*['\"]([a-zA-Z0-9]+)['\"]/";
+    $pattern = '/medias\/(\w+)\.jsonp/';
     if (preg_match($pattern, $video_html_frame, $matches)) {
         $id = $matches[1];
-        echo "Wistia ID Found from _wq.push: ".$id.PHP_EOL;
+        echo "Wistia ID Found from medias: ".$id.PHP_EOL;
     }
-    
+
     # Extract JWT token from options.authorization.jwt
     # The token may span multiple lines, so we use DOTALL modifier (s) and match across newlines
     # Pattern matches: jwt: 'token...' or jwt: "token..."
@@ -41,16 +39,7 @@ function video_downloader_videoproxy($video_url, $file_name, $quality = "720p") 
     if (preg_match($pattern, $video_html_frame, $matches)) {
         // Remove any newlines/whitespace that might be in the token
         $jwt_token = preg_replace('/\s+/', '', $matches[1]);
-        echo "JWT Token extracted successfully (length: ".strlen($jwt_token).")".PHP_EOL;
-    }
-    
-    # Second try: Get the jsonp id from the url (for older format)
-    if (empty($id)) {
-        $pattern = '/medias\/(\w+)\.jsonp/';
-        if (preg_match($pattern, $video_html_frame, $matches)) {
-            $id = $matches[1];
-            echo "Wistia ID Found from medias: ".$id.PHP_EOL;
-        }
+        echo "JWT Token extracted successfully : ".$jwt_token.PHP_EOL;
     }
 
     if(!empty($id)) {
@@ -92,7 +81,7 @@ function video_downloader_wistia($wistia_id, $file_name, $quality = "720p", $jwt
         
         // Get account ID from metadata
         $account_id = $media_data["accountId"];
-        echo "Account ID: ".$account_id.PHP_EOL;
+        // echo "Account ID: ".$account_id.PHP_EOL;
         
         // Construct the protected m3u8 URL with JWT token (pma parameter)
         $m3u8_url = "https://fast-protected.wistia.com/embed/accounts/".$account_id."/"."medias/".$wistia_id.".m3u8?quality_min=360&quality_max=2160&pma=".$jwt_token;
@@ -117,33 +106,15 @@ function video_downloader_wistia($wistia_id, $file_name, $quality = "720p", $jwt
             $video_assets_index = 0;
         }
 
-        $bin_url = $video_assets[$video_assets_index]["url"];
+        echo "Attempting M3U8 download method...".PHP_EOL;
         
-        // Try adding pma parameter to the bin URL
-        $protected_bin_url = $bin_url . "?pma=" . $jwt_token;
-        $file_name = filter_filename($media_data["name"]);
+        // Try m3u8 download with ffmpeg
+        $m3u8_result = download_m3u8_video($m3u8_url, $file_name);
         
-        echo "Attempting to download from protected .bin URL...".PHP_EOL;
-        echo "URL: ".$protected_bin_url.PHP_EOL;
-        echo "File Name: ".$file_name.PHP_EOL;
-        
-        // Try downloading with pma parameter
-        $download_result = downloadFileChunked($protected_bin_url, $file_name);
-        
-        if ($download_result === false || $download_result == 0) {
-            echo "Failed to download from .bin URL with pma parameter.".PHP_EOL;
-            echo "Attempting M3U8 download method...".PHP_EOL;
-            
-            // Try m3u8 download with ffmpeg
-            $m3u8_result = download_m3u8_video($m3u8_url, $file_name);
-            
-            if (!$m3u8_result) {
-                echo "Error: All download methods failed.".PHP_EOL;
-                echo "M3U8 URL for manual download: ".$m3u8_url.PHP_EOL;
-                return false;
-            }
-            
-            return true;
+        if (!$m3u8_result) {
+            echo "Error: All download methods failed.".PHP_EOL;
+            echo "M3U8 URL for manual download: ".$m3u8_url.PHP_EOL;
+            return false;
         }
         
         return true;
@@ -181,12 +152,14 @@ function video_downloader_wistia($wistia_id, $file_name, $quality = "720p", $jwt
 }
 
 /**
- * Download video from M3U8 playlist using ffmpeg
+ * Download video from M3U8 playlist using multithreaded segment download
  * 
  * This function:
  * 1. Fetches the m3u8 master playlist
  * 2. Parses it to find the best quality stream (highest resolution/bandwidth)
- * 3. Uses ffmpeg to download and merge the video segments
+ * 3. Downloads the best quality stream playlist
+ * 4. Downloads all .ts segments in parallel using curl multi
+ * 5. Uses ffmpeg to merge the segments into a single MP4 file
  * 
  * @param string $m3u8_url The master m3u8 playlist URL
  * @param string $output_file The output filename (without extension)
@@ -254,29 +227,101 @@ function download_m3u8_video($m3u8_url, $output_file) {
         return true;
     }
     
-    // Use ffmpeg to download the video
-    echo "Downloading with ffmpeg...".PHP_EOL;
+    // Fetch the stream playlist to get individual .ts segments
+    echo "Fetching stream playlist...".PHP_EOL;
+    $stream_playlist = file_get_contents($best_stream_url);
+    if ($stream_playlist === false) {
+        echo "Error: Failed to fetch stream playlist".PHP_EOL;
+        return false;
+    }
     
-    // Construct ffmpeg command
-    // -i: input URL
-    // -c copy: copy codec without re-encoding (faster)
-    // -bsf:a aac_adtstoasc: fix audio format if needed
-    // -y: overwrite output file if exists
-    $ffmpeg_cmd = "ffmpeg -i \"" . $best_stream_url . "\" -c copy -bsf:a aac_adtstoasc \"" . $output_path . "\" 2>&1";
+    // Parse the stream playlist to extract .ts segment URLs
+    $segment_urls = [];
+    $stream_lines = explode("\n", $stream_playlist);
+    $base_url = dirname($best_stream_url) . '/';
     
-    echo "Executing: ffmpeg -i [stream_url] -c copy -bsf:a aac_adtstoasc \"".$output_path."\"".PHP_EOL;
+    foreach ($stream_lines as $line) {
+        $line = trim($line);
+        // Skip empty lines and comments
+        if (empty($line) || $line[0] === '#') {
+            continue;
+        }
+        
+        // Check if it's a .ts file or relative URL
+        if (strpos($line, '.ts') !== false || strpos($line, '.m4s') !== false) {
+            // If it's a relative URL, prepend the base URL
+            if (strpos($line, 'http') !== 0) {
+                $segment_urls[] = $base_url . $line;
+            } else {
+                $segment_urls[] = $line;
+            }
+        }
+    }
     
-    // Execute ffmpeg
+    $total_segments = count($segment_urls);
+    if ($total_segments === 0) {
+        echo "Error: No segments found in stream playlist".PHP_EOL;
+        return false;
+    }
+    
+    echo "Found {$total_segments} segments to download".PHP_EOL;
+    
+    // Create temporary directory for segments
+    $temp_dir = sys_get_temp_dir() . '/wistia_' . uniqid();
+    if (!mkdir($temp_dir, 0777, true)) {
+        echo "Error: Failed to create temporary directory".PHP_EOL;
+        return false;
+    }
+    
+    echo "Downloading segments to: {$temp_dir}".PHP_EOL;
+    
+    // Download all segments using multithreaded approach
+    $success = download_segments_parallel($segment_urls, $temp_dir);
+    
+    if (!$success) {
+        echo "Error: Failed to download all segments".PHP_EOL;
+        // Cleanup
+        array_map('unlink', glob("{$temp_dir}/*"));
+        rmdir($temp_dir);
+        return false;
+    }
+    
+    echo "All segments downloaded successfully".PHP_EOL;
+    echo "Merging segments with ffmpeg...".PHP_EOL;
+    
+    // Create a file list for ffmpeg concat
+    $concat_file = $temp_dir . '/filelist.txt';
+    $fp = fopen($concat_file, 'w');
+    
+    // Sort segment files naturally
+    $segment_files = glob("{$temp_dir}/segment_*.ts");
+    natsort($segment_files);
+    
+    foreach ($segment_files as $segment_file) {
+        fwrite($fp, "file '" . basename($segment_file) . "'\n");
+    }
+    fclose($fp);
+    
+    // Use ffmpeg to concatenate all segments
+    $ffmpeg_cmd = "ffmpeg -f concat -safe 0 -i \"{$concat_file}\" -c copy -bsf:a aac_adtstoasc \"{$output_path}\" 2>&1";
+    
+    echo "Executing ffmpeg concat...".PHP_EOL;
+    
     $output = [];
     $return_var = 0;
     exec($ffmpeg_cmd, $output, $return_var);
     
-    // Check if download was successful
+    // Cleanup temporary files
+    echo "Cleaning up temporary files...".PHP_EOL;
+    array_map('unlink', glob("{$temp_dir}/*"));
+    rmdir($temp_dir);
+    
+    // Check if merge was successful
     if ($return_var === 0 && file_exists($output_path) && filesize($output_path) > 0) {
         echo "Successfully downloaded: ".$output_path." (".filesize($output_path)." bytes)".PHP_EOL;
         return true;
     } else {
-        echo "Error: ffmpeg download failed (exit code: ".$return_var.")".PHP_EOL;
+        echo "Error: ffmpeg merge failed (exit code: ".$return_var.")".PHP_EOL;
         echo "Last output lines:".PHP_EOL;
         echo implode("\n", array_slice($output, -10)).PHP_EOL;
         
@@ -288,4 +333,92 @@ function download_m3u8_video($m3u8_url, $output_file) {
         
         return false;
     }
+}
+
+/**
+ * Download multiple segments in parallel using curl multi
+ * 
+ * @param array $segment_urls Array of segment URLs to download
+ * @param string $temp_dir Temporary directory to save segments
+ * @return bool Success status
+ */
+function download_segments_parallel($segment_urls, $temp_dir) {
+    $total = count($segment_urls);
+    $downloaded = 0;
+    $batch_size = 20; // Download 20 segments at a time
+    
+    // Process segments in batches
+    for ($offset = 0; $offset < $total; $offset += $batch_size) {
+        $batch = array_slice($segment_urls, $offset, $batch_size);
+        $batch_count = count($batch);
+        
+        echo "Downloading batch: " . ($offset + 1) . "-" . ($offset + $batch_count) . " of {$total}...".PHP_EOL;
+        
+        // Initialize curl multi handle
+        $mh = curl_multi_init();
+        $curl_handles = [];
+        $file_handles = [];
+        
+        // Add all URLs in this batch to curl multi
+        foreach ($batch as $index => $url) {
+            $segment_index = $offset + $index;
+            $segment_file = $temp_dir . '/segment_' . str_pad($segment_index, 5, '0', STR_PAD_LEFT) . '.ts';
+            
+            $fp = fopen($segment_file, 'wb');
+            if (!$fp) {
+                echo "Error: Cannot create file {$segment_file}".PHP_EOL;
+                continue;
+            }
+            
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            
+            curl_multi_add_handle($mh, $ch);
+            $curl_handles[] = $ch;
+            $file_handles[] = $fp;
+        }
+        
+        // Execute all queries simultaneously
+        $running = null;
+        do {
+            curl_multi_exec($mh, $running);
+            curl_multi_select($mh);
+        } while ($running > 0);
+        
+        // Close handles and check for errors
+        $batch_success = true;
+        foreach ($curl_handles as $i => $ch) {
+            $error = curl_error($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if (!empty($error) || $http_code >= 400) {
+                echo "Error downloading segment: {$error} (HTTP {$http_code})".PHP_EOL;
+                $batch_success = false;
+            } else {
+                $downloaded++;
+            }
+            
+            curl_multi_remove_handle($mh, $ch);
+            curl_close($ch);
+            fclose($file_handles[$i]);
+        }
+        
+        curl_multi_close($mh);
+        
+        if (!$batch_success) {
+            echo "Error: Some segments in batch failed to download".PHP_EOL;
+            return false;
+        }
+        
+        // Show progress
+        $progress = round(($downloaded / $total) * 100, 1);
+        echo "Progress: {$downloaded}/{$total} ({$progress}%)".PHP_EOL;
+    }
+    
+    return $downloaded === $total;
 }
