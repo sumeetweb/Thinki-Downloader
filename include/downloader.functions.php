@@ -549,41 +549,58 @@ function downloadFileChunked($srcUrl, $dstName, $chunkSize = 1, $returnbytes = t
     if (file_exists($dstName)) {
         return;
     }
-    $http = array(
-        'request_fulluri' => 1,
-        'ignore_errors' => true,
-        'method' => 'GET',
-    );
     $headers = array();
-    $headers[] = 'Accept-Encoding: gzip, deflate, br';
+    $headers[] = 'Accept: */*';
     $headers[] = 'Sec-Fetch-Mode: cors';
     $headers[] = 'Sec-Fetch-Site: cross-site';
     $headers[] = 'x-requested-with: XMLHttpRequest';
     $headers[] = 'x-thinkific-client-date: ' . $clientdate;
     $headers[] = 'cookie: ' . $cookiedata;
-    $headers[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
-    $http['header'] = $headers;
-    $context = stream_context_create(array('http' => $http));
+    $useragent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36';
 
-    $chunksize = $chunkSize * (1024 * 1024); // How many bytes per chunk. By default 1MB.
-    $data = '';
-    $bytesCount = 0;
-    $handle = fopen($srcUrl, 'rb', false, $context);
+    $ch = curl_init($srcUrl);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+    // Advertise supported encodings AND transparently decompress the response.
+    // The PHP stream wrapper (previously used here) does NOT decode Content-Encoding,
+    // so gzip-encoded files (e.g. Guitar Pro .gp files) were saved compressed and corrupt.
+    // Do NOT also set an Accept-Encoding header manually here - it would override
+    // CURLOPT_ENCODING and disable cURL's automatic decompression.
+    curl_setopt($ch, CURLOPT_ENCODING, '');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0); // Stream to disk via WRITEFUNCTION below.
+
     $fp = fopen($dstName, 'w');
-    if ($handle === false) {
+    if ($fp === false) {
+        curl_close($ch);
         return false;
     }
-    while (!feof($handle)) {
-        $data = fread($handle, $chunksize);
-        fwrite($fp, $data, strlen($data));
-        if ($returnbytes) {
-            $bytesCount += strlen($data);
+
+    $bytesCount = 0;
+    // Write each received chunk to disk as it arrives, keeping memory usage low.
+    curl_setopt($ch, CURLOPT_WRITEFUNCTION, function ($ch, $data) use ($fp, &$bytesCount, $returnbytes) {
+        $len = fwrite($fp, $data);
+        if ($returnbytes && $len !== false) {
+            $bytesCount += $len;
         }
-    }
-    $status = fclose($handle);
+        return $len;
+    });
+
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
     fclose($fp);
-    if ($returnbytes && $status) {
+
+    if ($result === false || $httpCode >= 400) {
+        @unlink($dstName); // Don't leave a partial/corrupt file behind on failure.
+        return false;
+    }
+
+    if ($returnbytes) {
         return $bytesCount; // Return number of bytes delivered like readfile() does.
     }
-    return $status;
+    return true;
 }
